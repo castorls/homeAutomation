@@ -15,10 +15,10 @@
   </properties>
 
   <modules>
-    <module>server</module>
-    <module>model</module>
-    <module>simpleClient</module>
-    <module>androidClient</module>
-    <module>web</module>
+    <module>../server</module>
+    <module>../model</module>
+    <module>../simpleClient</module>
+    <module>../androidClient</module>
+    <module>../web</module>
   </modules>
 </project>
