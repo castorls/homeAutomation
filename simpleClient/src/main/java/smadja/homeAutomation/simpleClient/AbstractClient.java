@@ -6,16 +6,21 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.model.Parameter;
+
 public abstract class AbstractClient {
 
 	private static final String CLIENT_PROP = "client.prop";
 	private static Logger logger = Logger.getLogger(AbstractClient.class);
-	protected String user;
-	protected String emitter;
-	protected String password;
-	protected String host;
-	protected int port;
 
+	public void doJob(String[] args) {
+		Parameter parameter = init(getProps());
+		if (parameter != null) {
+			doInternalJob(parameter, args);
+		}
+		
+	}
+	
 	public Properties getProps() {
 		InputStream propInputStream = this.getClass().getClassLoader().getResourceAsStream(CLIENT_PROP);
 		if (propInputStream == null) {
@@ -33,19 +38,19 @@ public abstract class AbstractClient {
 		return null;
 	}
 
-	public boolean init(Properties props) {
+	public Parameter init(Properties props) {
 		if (props == null) {
-			return false;
+			return null;
 		}
-		emitter = props.getProperty("emitter");
-		user = props.getProperty("user");
-		password = props.getProperty("password");
-		host = props.getProperty("host");
+		String emitter = props.getProperty("emitter");
+		String user = props.getProperty("user");
+		String password = props.getProperty("password");
+		String host = props.getProperty("host");
 		String portStr = props.getProperty("port");
-		port = portStr == null ? 61616 : Integer.parseInt(portStr);
-		return true;
+		int port = portStr == null ? 61616 : Integer.parseInt(portStr);
+		return new Parameter(user, emitter, password, host, port);
 	}
 
-	abstract public void doJob(String[] args);
+	abstract public void doInternalJob(Parameter parameter, String[] args);
 
 }
