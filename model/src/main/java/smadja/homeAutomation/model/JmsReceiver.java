@@ -59,6 +59,7 @@ public class JmsReceiver implements Runnable {
 					String msg = new String(byteArr, "UTF-8");
 					try {
 						homeMsg = MessageHelper.deserialize(msg);
+						homeMsg.setJmsMessage(tempMsg);
 					} catch (JsonProcessingException e) {
 						logger.error(e.getMessage(), e);
 					}
@@ -66,6 +67,7 @@ public class JmsReceiver implements Runnable {
 					TextMessage textMessage = (TextMessage) tempMsg;
 					try {
 						homeMsg = MessageHelper.deserialize(textMessage.getText());
+						homeMsg.setJmsMessage(tempMsg);
 					} catch (JsonProcessingException e) {
 						logger.error(e.getMessage(), e);
 					}

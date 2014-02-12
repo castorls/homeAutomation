@@ -7,6 +7,7 @@ public class Message {
 	private String emitter;
 	private String content;
 	private Date eventDate;
+	private javax.jms.Message jmsMessage;
 
 	public String getEmitter() {
 		return emitter;
@@ -35,6 +36,15 @@ public class Message {
 	@Override
 	public String toString() {
 		return "Message [emitter=" + emitter + ", content=" + content + ", eventDate=" + eventDate + "]";
+	}
+
+	public javax.jms.Message getJmsMessage() {
+		return jmsMessage;
+	}
+
+	public void setJmsMessage(javax.jms.Message msg) {
+		this.jmsMessage = msg;
+		
 	}
 
 	
