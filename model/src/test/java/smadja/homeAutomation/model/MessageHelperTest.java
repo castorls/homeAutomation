@@ -14,12 +14,10 @@ public class MessageHelperTest extends TestCase {
 		String content = "The content to set";
 		String emitter = "The emitter";
 		Date eventDate = new Date(System.currentTimeMillis() - 1000L);
-		Date sendDate = new Date();
 		
 		msg.setContent(content);
 		msg.setEmitter(emitter);
 		msg.setEventDate(eventDate);
-		msg.setSendDate(sendDate);
 		String value = null;
 		try {
 			value = MessageHelper.serialize(msg);
@@ -33,7 +31,6 @@ public class MessageHelperTest extends TestCase {
 			assertEquals(content, msg2.getContent());
 			assertEquals(emitter, msg2.getEmitter());
 			assertEquals(eventDate, msg2.getEventDate());
-			assertEquals(sendDate, msg2.getSendDate());
 		} catch (IOException e) {
 			assertNotSame(null,e);
 		}

@@ -6,7 +6,6 @@ public class Message {
 
 	private String emitter;
 	private String content;
-	private Date sendDate;
 	private Date eventDate;
 
 	public String getEmitter() {
@@ -25,14 +24,6 @@ public class Message {
 		this.content = content;
 	}
 
-	public Date getSendDate() {
-		return sendDate;
-	}
-
-	public void setSendDate(Date sendDate) {
-		this.sendDate = sendDate;
-	}
-
 	public Date getEventDate() {
 		return eventDate;
 	}
@@ -41,4 +32,10 @@ public class Message {
 		this.eventDate = eventDate;
 	}
 
+	@Override
+	public String toString() {
+		return "Message [emitter=" + emitter + ", content=" + content + ", eventDate=" + eventDate + "]";
+	}
+
+	
 }
