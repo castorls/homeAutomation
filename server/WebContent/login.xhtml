@@ -1,0 +1,23 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core"
+xmlns:ui="http://java.sun.com/jsf/facelets"
+xmlns:a4j="http://richfaces.org/a4j"
+xmlns:rich="http://richfaces.org/rich">
+<f:view>
+<h:head></h:head>
+<h:body>
+<rich:panel header="Richfaces sample validation and auto-completion">
+<h:form>
+<h:outputText value="Enter your name" />
+<h:inputText id="name" value="#{loginBean.name}">
+<rich:validator />
+</h:inputText>
+<rich:message for="name" />
+<br />
+<h:outputText value="#{loginBean.name}"></h:outputText>
+</h:form>
+</rich:panel>
+</h:body>
+</f:view>
+</ui:composition>

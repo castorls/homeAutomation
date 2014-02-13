@@ -18,6 +18,7 @@ public class MessageHelperTest extends TestCase {
 		msg.setContent(content);
 		msg.setEmitter(emitter);
 		msg.setEventDate(eventDate);
+		msg.setTransientFlag(true);
 		String value = null;
 		try {
 			value = MessageHelper.serialize(msg);
@@ -31,6 +32,7 @@ public class MessageHelperTest extends TestCase {
 			assertEquals(content, msg2.getContent());
 			assertEquals(emitter, msg2.getEmitter());
 			assertEquals(eventDate, msg2.getEventDate());
+			assertEquals(true, msg2.isTransientFlag());
 		} catch (IOException e) {
 			assertNotSame(null,e);
 		}

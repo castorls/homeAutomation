@@ -8,6 +8,15 @@ public class Message {
 	private String content;
 	private Date eventDate;
 	private javax.jms.Message jmsMessage;
+	private boolean transientFlag = false;
+
+	public boolean isTransientFlag() {
+		return transientFlag;
+	}
+
+	public void setTransientFlag(boolean transientFlag) {
+		this.transientFlag = transientFlag;
+	}
 
 	public String getEmitter() {
 		return emitter;
@@ -35,7 +44,7 @@ public class Message {
 
 	@Override
 	public String toString() {
-		return "Message [emitter=" + emitter + ", content=" + content + ", eventDate=" + eventDate + "]";
+		return "Message [emitter=" + emitter + ", content=" + content + ", eventDate=" + eventDate + ", jmsMessage=" + jmsMessage + ", transientFlag=" + transientFlag + "]";
 	}
 
 	public javax.jms.Message getJmsMessage() {
@@ -44,8 +53,7 @@ public class Message {
 
 	public void setJmsMessage(javax.jms.Message msg) {
 		this.jmsMessage = msg;
-		
+
 	}
 
-	
 }

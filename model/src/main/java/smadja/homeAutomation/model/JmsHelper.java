@@ -1,5 +1,7 @@
 package smadja.homeAutomation.model;
 
+import java.util.Date;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.DeliveryMode;
@@ -9,9 +11,12 @@ import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.Queue;
 import javax.jms.Session;
+import javax.jms.TextMessage;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.log4j.Logger;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 public class JmsHelper {
 	private static Logger logger = Logger.getLogger(JmsHelper.class);
@@ -56,5 +61,35 @@ public class JmsHelper {
 		return null;
 	}
 
+	public static void sendHomeMessage(Parameter parameter, String content, String correlationId) {
+		Connection connection = null;
+		try {
+			connection = JmsHelper.initConnection(parameter);
+			Session session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
+			MessageProducer producer = JmsHelper.initQueueProducer(session, (QueueParameter) parameter);
+			connection.start();
+			Message msg = new Message();
+			msg.setContent(content);
+			msg.setEventDate(new Date());
+			msg.setEmitter(parameter.getEmitter());
+			TextMessage jmsMsg = session.createTextMessage();
+			jmsMsg.setJMSCorrelationID(correlationId);
+			jmsMsg.setText(MessageHelper.serialize(msg));
+			producer.send(jmsMsg);
+			session.commit();
+		} catch (JMSException e) {
+			logger.error(e.getMessage(), e);
+		} catch (JsonProcessingException e) {
+			logger.error(e.getMessage(), e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (JMSException e) {
+					// nothing to do
+				}
+			}
+		}
+	}
 
 }

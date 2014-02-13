@@ -37,7 +37,7 @@ public class Receiver extends AbstractClient implements HomeMessageListener {
 	@Override
 	public void doInternalJob(Parameter parameter, String[] args) {
 		HomeMessageListener[] listeners = { this };
-		JmsReceiver receiver = new JmsReceiver((QueueReceiverParameter) parameter, listeners, true);
+		JmsReceiver receiver = new JmsReceiver((QueueReceiverParameter) parameter, listeners, (args.length > 0 && Boolean.parseBoolean(args[0]))?true:false);
 		Thread t = new Thread(receiver);
 		t.start();
 	}
