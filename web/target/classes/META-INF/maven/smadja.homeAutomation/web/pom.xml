@@ -9,7 +9,6 @@
   </parent>
   <groupId>smadja.homeAutomation</groupId>
   <artifactId>web</artifactId>
-  <version>1.0-SNAPSHOT</version>
   <name>web</name>
   <url>http://maven.apache.org</url>
   <properties>

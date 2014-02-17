@@ -22,7 +22,7 @@ public class JmsReceiver implements Runnable {
 	private QueueReceiverParameter parameter;
 	private HomeMessageListener[] listeners;
 
-	public JmsReceiver(QueueReceiverParameter parameter,  HomeMessageListener[] listeners, boolean doLoop) {
+	public JmsReceiver(QueueReceiverParameter parameter, HomeMessageListener[] listeners, boolean doLoop) {
 		this.shouldContinue = doLoop;
 		this.parameter = parameter;
 		this.listeners = listeners;
@@ -76,14 +76,17 @@ public class JmsReceiver implements Runnable {
 					logger.debug("Invalid message in queue --> ROLLBACK");
 				} else {
 					logger.debug("Received : " + homeMsg.toString());
+					boolean shouldAcknowlegde = false;
 					for (HomeMessageListener listener : listeners) {
 						try {
-							listener.onMessage(homeMsg);
+							shouldAcknowlegde = listener.onMessage(homeMsg, shouldAcknowlegde);
 						} catch (Exception e) {
 							logger.error(e.getMessage(), e);
 						}
 					}
-					tempMsg.acknowledge();
+					if (shouldAcknowlegde) {
+						tempMsg.acknowledge();
+					}
 					session.commit();
 				}
 				tempMsg = (Message) consumer.receive(parameter.getReceiveTimeout());

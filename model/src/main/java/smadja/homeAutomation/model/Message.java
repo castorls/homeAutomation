@@ -5,10 +5,11 @@ import java.util.Date;
 public class Message {
 
 	private String emitter;
+	private String targetElement;
 	private String content;
 	private Date eventDate;
 	private javax.jms.Message jmsMessage;
-	private boolean transientFlag = false;
+	private boolean transientFlag = true;
 
 	public boolean isTransientFlag() {
 		return transientFlag;
@@ -42,18 +43,24 @@ public class Message {
 		this.eventDate = eventDate;
 	}
 
-	@Override
-	public String toString() {
-		return "Message [emitter=" + emitter + ", content=" + content + ", eventDate=" + eventDate + ", jmsMessage=" + jmsMessage + ", transientFlag=" + transientFlag + "]";
-	}
-
 	public javax.jms.Message getJmsMessage() {
 		return jmsMessage;
 	}
 
 	public void setJmsMessage(javax.jms.Message msg) {
 		this.jmsMessage = msg;
-
 	}
 
+	public String getTargetElement() {
+		return targetElement;
+	}
+
+	public void setTargetElement(String targetElement) {
+		this.targetElement = targetElement;
+	}
+
+	@Override
+	public String toString() {
+		return "Message [emitter=" + emitter + ", targetElement=" + targetElement + ", content=" + content + ", eventDate=" + eventDate + ", jmsMessage=" + jmsMessage + ", transientFlag=" + transientFlag + "]";
+	}
 }

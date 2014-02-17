@@ -12,10 +12,11 @@ public abstract class AbstractClient {
 
 	private static final String CLIENT_PROP = "client.prop";
 	private static Logger logger = Logger.getLogger(AbstractClient.class);
-
+	
 	public void doJob(String[] args) {
 		Parameter parameter = init(getProps());
 		if (parameter != null) {
+			logger.info("Starting "+parameter.getEmitter()+" client");
 			doInternalJob(parameter, args);
 		}
 		
@@ -42,13 +43,13 @@ public abstract class AbstractClient {
 		if (props == null) {
 			return null;
 		}
-		String emitter = props.getProperty("emitter");
+		String id = props.getProperty("id");
 		String user = props.getProperty("user");
 		String password = props.getProperty("password");
 		String host = props.getProperty("host");
 		String portStr = props.getProperty("port");
 		int port = portStr == null ? 61616 : Integer.parseInt(portStr);
-		return new Parameter(user, emitter, password, host, port);
+		return new Parameter(user, id, password, host, port);
 	}
 
 	abstract public void doInternalJob(Parameter parameter, String[] args);
