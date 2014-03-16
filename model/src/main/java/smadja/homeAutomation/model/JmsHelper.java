@@ -61,17 +61,18 @@ public class JmsHelper {
 		return null;
 	}
 	
-	public static void sendHomeMessage(Parameter parameter, String targetElement, String content, String correlationId, long expiration) {
+	public static String sendHomeMessage(Parameter parameter, String targetElement, String content, String correlationId, long expiration) {
 		Message msg = new Message();
 		msg.setContent(content);
 		msg.setEventDate(new Date());
 		msg.setEmitter(parameter.getEmitter());
 		msg.setTargetElement(targetElement);
-		sendHomeMessage(parameter, targetElement, msg, correlationId, expiration);
+		return sendHomeMessage(parameter, targetElement, msg, correlationId, expiration);
 	}
 	
-	public static void sendHomeMessage(Parameter parameter, String targetElement, Message msg, String correlationId, long expiration) {
+	public static String sendHomeMessage(Parameter parameter, String targetElement, Message msg, String correlationId, long expiration) {
 		Connection connection = null;
+		String msgId = null;
 		try {
 			connection = JmsHelper.initConnection(parameter);
 			Session session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
@@ -83,8 +84,9 @@ public class JmsHelper {
 			if(expiration > 0){
 				jmsMsg.setJMSExpiration(System.currentTimeMillis() + expiration);
 			}
-			producer.send(jmsMsg);
+			producer.send(jmsMsg);			
 			session.commit();
+			msgId = jmsMsg.getJMSMessageID();
 		} catch (JMSException e) {
 			logger.error(e.getMessage(), e);
 		} catch (JsonProcessingException e) {
@@ -98,6 +100,7 @@ public class JmsHelper {
 				}
 			}
 		}
+		return msgId;
 	}
 
 }

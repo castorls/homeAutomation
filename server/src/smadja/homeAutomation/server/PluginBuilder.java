@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Properties;
 
+import smadja.homeAutomation.model.HomeAutomationException;
+
 public class PluginBuilder {
 
 	public static Plugin build(File confFile, Server server) throws HomeAutomationException {
@@ -27,21 +29,7 @@ public class PluginBuilder {
 			} else {
 				throw new HomeAutomationException("Invalid plugin class : " + className);
 			}
-		} catch (IOException e) {
-			throw new HomeAutomationException("Cannot read plugin configuration file " + e.getMessage(), e);
-		} catch (ClassNotFoundException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (InstantiationException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (IllegalAccessException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (IllegalArgumentException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (InvocationTargetException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (NoSuchMethodException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (SecurityException e) {
+		} catch (IOException | ClassNotFoundException  | InstantiationException  | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
 		}
 

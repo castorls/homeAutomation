@@ -12,18 +12,20 @@ import java.util.Properties;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.model.HomeAutomationException;
+
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 public class DBUtil {
 
 	private static Logger logger = Logger.getLogger(DBUtil.class);
-	
+
 	private static ComboPooledDataSource cpds = null;
-	
+
 	public static void init(Properties props, List<File> sqlList) throws HomeAutomationException {
 		Connection connection = null;
 		try {
-			ComboPooledDataSource cpds = new ComboPooledDataSource();
+			cpds = new ComboPooledDataSource();
 			cpds.setDriverClass(props.getProperty("db.driver")); // loads the
 																	// jdbc
 																	// driver
@@ -42,33 +44,41 @@ public class DBUtil {
 			connection = cpds.getConnection();
 			connection.setAutoCommit(false);
 			Statement statement = connection.createStatement();
-			for(File sqlFile : sqlList){
-				logger.info("Execute init SQL from "+sqlFile);
+			for (File sqlFile : sqlList) {
+				logger.info("Execute init SQL from " + sqlFile);
 				String sql = FileUtils.readFileToString(sqlFile);
 				statement.execute(sql);
 			}
 			connection.commit();
-			
+
 		} catch (PropertyVetoException | IOException | SQLException e) {
-			if(connection != null){
+			if (connection != null) {
 				try {
 					connection.rollback();
 				} catch (SQLException e1) {
-					//nothing to do
+					// nothing to do
 				}
 			}
 			throw new HomeAutomationException(e.getMessage(), e);
-		}
-		finally{
-			if(connection != null){
+		} finally {
+			if (connection != null) {
 				try {
 					connection.close();
 				} catch (SQLException e) {
-					//nothing to do
+					// nothing to do
 				}
 			}
 
 		}
+	}
+
+	public static Connection getConnection() throws HomeAutomationException {
+		try {
+			return cpds == null ? null : cpds.getConnection();
+		} catch (SQLException e) {
+			throw new HomeAutomationException(e.getMessage(), e);
+		}
+
 	}
 
 }

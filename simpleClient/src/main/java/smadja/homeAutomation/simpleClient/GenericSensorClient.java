@@ -60,7 +60,7 @@ public class GenericSensorClient extends Receiver {
 		if (queueParam == null) {
 			return false;
 		}
-		if(getId().equals(msg.getTargetElement())){
+		if(!getId().equals(msg.getTargetElement())){
 			return false;
 		}
 		Message returnedMessage = generateValueMessage(msg);

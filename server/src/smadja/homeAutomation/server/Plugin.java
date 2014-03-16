@@ -5,6 +5,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeMessageListener;
 
 public abstract class Plugin implements HomeMessageListener {
@@ -35,7 +36,7 @@ public abstract class Plugin implements HomeMessageListener {
 		this.id = id;
 	}
 
-	public abstract void init(File pluginDirectory, Properties confProp);
+	public abstract void init(File pluginDirectory, Properties confProp) throws HomeAutomationException;
 
 	public void start() {
 		logger.info("Start " + getId() + " Plugin");

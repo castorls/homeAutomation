@@ -1,7 +1,9 @@
 package smadja.homeAutomation.plugins;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -9,6 +11,7 @@ import java.util.TimerTask;
 import org.apache.log4j.Logger;
 
 import smadja.homeAutomation.model.GenericSensor;
+import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 import smadja.homeAutomation.model.JmsHelper;
 import smadja.homeAutomation.model.Message;
@@ -21,6 +24,7 @@ public class RefreshSensorValuePlugin extends Plugin {
 	private static Logger logger = Logger.getLogger(RefreshSensorValuePlugin.class);
 	private long refreshDelay = 60 * 1000L;
 	private Timer timer = null;
+	private Map<HomeElement, String> correlationIdMap = new HashMap<HomeElement, String>();
 
 	public RefreshSensorValuePlugin(String id, Server server) {
 		super(id, server);
@@ -28,8 +32,17 @@ public class RefreshSensorValuePlugin extends Plugin {
 
 	@Override
 	public boolean onMessage(Message msg, boolean shouldAcknowledge) {
-		// TODO Auto-generated method stub
-		return false;
+		if (msg.isTransientFlag()) {
+			return false;
+		}
+		String emitter = msg.getEmitter();
+		Server server = getServer();
+		try {
+			server.saveValue(server.getHomeElementById(emitter), msg);
+		} catch (HomeAutomationException e) {
+			return false;
+		}
+		return true;
 	}
 
 	@Override
@@ -51,7 +64,8 @@ public class RefreshSensorValuePlugin extends Plugin {
 				}
 				logger.info("Refresh sensor value");
 				for (HomeElement elt : eltList) {
-					JmsHelper.sendHomeMessage(server.getQueue(elt.getQueue()), elt.getId(), "refresh", null, expiration);
+					String id = JmsHelper.sendHomeMessage(server.getQueue(elt.getQueue()), elt.getId(), "refresh", null, expiration);
+					correlationIdMap.put(elt, id);
 				}
 			}
 		}, 1000L, refreshDelay);

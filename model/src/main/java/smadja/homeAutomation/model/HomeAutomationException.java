@@ -1,4 +1,4 @@
-package smadja.homeAutomation.server;
+package smadja.homeAutomation.model;
 
 public class HomeAutomationException extends Exception {
 

@@ -4,6 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,12 +18,17 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.model.GenericSensor;
+import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 import smadja.homeAutomation.model.HomeMessageListener;
 import smadja.homeAutomation.model.JmsReceiver;
+import smadja.homeAutomation.model.Message;
+import smadja.homeAutomation.model.MessageHelper;
 import smadja.homeAutomation.model.Parameter;
 import smadja.homeAutomation.model.QueueParameter;
 import smadja.homeAutomation.model.QueueReceiverParameter;
+import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
 public class Server {
 
@@ -128,6 +136,7 @@ public class Server {
 			String persistentStr = serverProp.getProperty("isPersistent");
 			queueParameter.setPersistent(persistentStr == null ? true : Boolean.parseBoolean(persistentStr));
 			queueMap.put(sensorQueue, queueParameter);
+			queueMap.put(SENSOR_QUEUE, queueParameter);
 		}
 
 		// init action sending queue
@@ -139,6 +148,7 @@ public class Server {
 			String persistentStr = serverProp.getProperty("isPersistent");
 			queueParameter.setPersistent(persistentStr == null ? true : Boolean.parseBoolean(persistentStr));
 			queueMap.put(actionQueue, queueParameter);
+			queueMap.put(ACTION_QUEUE, queueParameter);
 		}
 	}
 
@@ -283,6 +293,52 @@ public class Server {
 			});
 			server.startAndWait();
 		}
+	}
 
+	public HomeElement getHomeElementById(String id) {
+		if (id == null || id.trim().equals("")) {
+			return null;
+		}
+		List<HomeElement> eltList = getHomeElementList();
+		if (eltList.isEmpty()) {
+			return null;
+		}
+		for (HomeElement elt : eltList) {
+			if (id.equals(elt.getId())) {
+				return elt;
+			}
+		}
+		return null;
+	}
+
+	public void saveValue(HomeElement homeElt, Message msg) throws HomeAutomationException {
+		if (homeElt == null || msg == null) {
+			return;
+		}
+		if(homeElt instanceof GenericSensor){
+			try {
+				((GenericSensor)homeElt).setValue(MessageHelper.getDoubleValue(msg));
+			} catch (ParseException e) {
+				logger.debug(e.getMessage(), e);
+			}
+		}
+		HomeElementDbMapper mapper = homeElt.getDbMapper();
+		if (mapper == null) {
+			return;
+		}
+		Connection connection = DBUtil.getConnection();
+		try {
+			mapper.saveValue(homeElt, msg, connection);
+		} catch (HomeAutomationException e) {
+			throw new HomeAutomationException(e.getMessage(), e);
+		} finally {
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e1) {
+					// nothing to do
+				}
+			}
+		}
 	}
 }

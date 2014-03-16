@@ -7,7 +7,7 @@ import smadja.homeAutomation.model.HomeElement;
 
 public class PluginHelper {
 
-	public static List<HomeElement> filterElementList(List<HomeElement> eltList, Class clazz) {
+	public static List<HomeElement> filterElementList(List<HomeElement> eltList, Class<?> clazz) {
 		if (eltList == null || eltList.isEmpty()) {
 			return new ArrayList<HomeElement>();
 		}

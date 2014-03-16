@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
+import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 
 public class HomeElementBuilder {
@@ -28,13 +29,7 @@ public class HomeElementBuilder {
 			else{
 				throw new HomeAutomationException("Invalid plugin class : "+className);
 			}
-		} catch (IOException e) {
-			throw new HomeAutomationException("Cannot read plugin configuration file " + e.getMessage(), e);
-		} catch (ClassNotFoundException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (InstantiationException e) {
-			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
-		} catch (IllegalAccessException e) {
+		} catch (IOException | ClassNotFoundException  | InstantiationException  | IllegalAccessException e) {
 			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
 		}
 
