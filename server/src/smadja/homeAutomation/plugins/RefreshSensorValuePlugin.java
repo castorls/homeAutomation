@@ -54,7 +54,7 @@ public class RefreshSensorValuePlugin extends Plugin {
 	@Override
 	public void start() {
 		final Server server = getServer();
-		Timer timer = new Timer();
+		timer = new Timer();
 		final long expiration = this.refreshDelay + 1000L;
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {

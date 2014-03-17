@@ -15,6 +15,11 @@ public class QueueParameter extends Parameter {
 		super(param);
 	}
 	
+	public QueueParameter(QueueParameter param){
+		super(param);
+		this.destinationQueue = param.getDestinationQueue();
+		this.isPersistent = param.isPersistent();
+	}
 
 	public String getDestinationQueue() {
 		return destinationQueue;

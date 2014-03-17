@@ -14,6 +14,12 @@ public class QueueReceiverParameter extends Parameter {
 	public QueueReceiverParameter(Parameter param) {
 		super(param);
 	}
+	
+	public QueueReceiverParameter(QueueReceiverParameter param){
+		super(param);
+		this.receiveQueue = param.getReceiveQueue();
+		this.receiveTimeout = param.getReceiveTimeout();
+	}
 
 	public String getReceiveQueue() {
 		return receiveQueue;
