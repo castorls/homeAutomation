@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pageflow:Pageflow xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13923309456550" configfile="/server/WebContent/WEB-INF/faces-config.xml"/>
+<pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13923309456550" configfile="/server/WebContent/WEB-INF/faces-config.xml">
+  <nodes xsi:type="pageflow:PFPage" name="index.xhtml" x="156" y="240" id="pf13952752848690" referenceLink="//@navigationRule.1/@navigationCase.2/@toViewId|" outlinks="pf13952752848691" inlinks="pf139534541331510" path="/index.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sensors/list.xhtml" x="324" y="336" id="pf13952752848692" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13952752848691" path="/sensors/list.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="todo.xhtml" x="360" y="48" id="pf13953444012003" referenceLink="//@navigationRule.1/@navigationCase.3/@toViewId|" inlinks="pf13953444012004 pf139534541963611" path="/todo.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="catalog" x="96" y="48" id="pf13953444012005" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13953444012006 pf13953444012004 pf139534541331510 pf139534541963611" path="/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="error.xhtml" x="240" y="119" id="pf13953444012007" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13953444012006" path="/error.xhtml"/>
+  <links id="pf13952752848691" target="pf13952752848692" source="pf13952752848690" outcome="success" fromaction="#{sensorsBean.doList}"/>
+  <links id="pf13953444012006" target="pf13953444012007" source="pf13953444012005" outcome="error"/>
+  <links id="pf13953444012004" target="pf13953444012003" source="pf13953444012005" outcome="todo"/>
+  <links id="pf139534541331510" target="pf13952752848690" source="pf13953444012005" outcome="home"/>
+  <links id="pf139534541963611" target="pf13953444012003" source="pf13953444012005" outcome="view"/>
+</pageflow:Pageflow>

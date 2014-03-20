@@ -96,6 +96,10 @@ public class ICSPlugin extends Plugin {
 		}, 1000L, refreshDelay);
 		minuteTimer = new Timer();
 		java.util.Calendar cal = java.util.Calendar.getInstance();
+		long delay = (55 - cal.get(java.util.Calendar.SECOND)) * 1000L;
+		if( delay <= 0){
+			delay=1000L;
+		}
 		minuteTimer.scheduleAtFixedRate(new TimerTask() {
 			@Override
 			public void run() {
@@ -119,7 +123,7 @@ public class ICSPlugin extends Plugin {
 					}
 				}
 			}
-		}, (55 - cal.get(java.util.Calendar.SECOND)) * 1000L , 60 * 1000L);
+		}, delay , 60 * 1000L);
 	}
 
 	private void sendVEventMessage(VEvent event, boolean isStart) {

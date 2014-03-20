@@ -1,9 +1,18 @@
 package smadja.homeAutomation.model;
 
-public class GenericActioner extends HomeElement {
+public class GenericActuator extends HomeElement {
 	
 	private String state = null;
 
+	public GenericActuator(){
+		super();
+	}
+	
+	public GenericActuator(GenericActuator other){
+		super(other);
+		this.state = other.state == null ? null : new String(other.state);
+	}
+	
 	@Override
 	public boolean shouldSendAction(String action) {
 		if(state == null){
@@ -21,6 +30,4 @@ public class GenericActioner extends HomeElement {
 			state = action;
 		}
 	}
-	
-	
 }

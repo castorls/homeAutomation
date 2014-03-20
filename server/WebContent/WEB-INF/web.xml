@@ -36,6 +36,10 @@
 	<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
 	<param-value>.xhtml</param-value>
   </context-param>
+   <error-page>
+        <error-code>500</error-code>
+        <location>/faces/error.xhtml</location>
+    </error-page>
   <listener>
     <listener-class>com.sun.faces.config.ConfigureListener</listener-class>
   </listener>

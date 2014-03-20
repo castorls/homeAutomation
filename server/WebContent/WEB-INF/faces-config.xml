@@ -1,12 +1,76 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<faces-config
-    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
-    version="2.2">
+<faces-config xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
+	version="2.2">
 	<managed-bean>
 		<managed-bean-name>loginBean</managed-bean-name>
 		<managed-bean-class>server.LoginBean</managed-bean-class>
 		<managed-bean-scope>session</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>sensorsBean</managed-bean-name>
+		<managed-bean-class>admin.console.beans.SensorsBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>actuatorsBean</managed-bean-name>
+		<managed-bean-class>admin.console.beans.ActuatorsBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>pluginsBean</managed-bean-name>
+		<managed-bean-class>admin.console.beans.PluginsBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>errorBean</managed-bean-name>
+		<managed-bean-class>admin.console.beans.ErrorBean</managed-bean-class>
+		<managed-bean-scope>request</managed-bean-scope>
+	</managed-bean>
+	<navigation-rule>
+		<display-name>catalog</display-name>
+		<from-view-id>/*</from-view-id>
+		<navigation-case>
+			<from-action>#{sensorsBean.cancelCurrentBeanEdition}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.saveCurrentBean}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.doNew}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.edit}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.doList}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>error</from-outcome>
+			<to-view-id>/error.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>todo</from-outcome>
+			<to-view-id>/todo.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>home</from-outcome>
+			<to-view-id>/index.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-outcome>view</from-outcome>
+			<to-view-id>/todo.xhtml</to-view-id>
+		</navigation-case>
+	</navigation-rule>
 </faces-config>

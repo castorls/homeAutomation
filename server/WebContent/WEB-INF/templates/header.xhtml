@@ -1,7 +1,25 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<body>
-<div style="width:100%;font-size:36px;line-height:48px;background-color:navy;color:white">My Facelet Application</div>
-</body>
-</html>
+   <html xmlns="http://www.w3.org/1999/xhtml"
+       xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+
+		<rich:toolbar>
+			<rich:menuItem label="Home" action="home"  iconDisabled="true" />
+			<rich:menuItem label="View" action="view" iconDisabled="true"/>
+			<rich:dropDownMenu label="sensors">
+				<rich:menuItem label="New" action="#{sensorsBean.doNew}" />
+				<rich:menuItem  label="List" action="#{sensorsBean.doList}" />
+				<rich:menuItem  label="Search" action="#{sensorsBean.doSearch}" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu label="actuators">
+				<rich:menuItem label="New" action="#{actuatorsBean.doNew}" />
+				<rich:menuItem  label="List" action="#{actuatorsBean.doList}" />
+				<rich:menuItem  label="Search" action="#{actuatorsBean.doSearch}" />
+			</rich:dropDownMenu>
+			<rich:dropDownMenu label="plugins">
+				<rich:menuItem label="New" action="#{pluginsBean.doNew}" />
+				<rich:menuItem  label="List" action="#{pluginsBean.doList}" />
+				<rich:menuItem  label="Search" action="#{pluginsBean.doSearch}" />
+			</rich:dropDownMenu>
+		</rich:toolbar>
+   </html>   

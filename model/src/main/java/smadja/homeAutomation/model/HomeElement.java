@@ -5,13 +5,25 @@ import java.util.Properties;
 
 import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
-public abstract class HomeElement {
+public abstract class HomeElement implements Comparable<HomeElement> {
 
 	private String id;
 	private String label;
 	private String queue;
 	private File configDirectory;
 	private HomeElementDbMapper dbMapper;
+
+	public HomeElement() {
+
+	}
+
+	public HomeElement(HomeElement other) {
+		this.id = other.id == null ? null : new String(other.id);
+		this.label = other.label == null ? null : new String(other.label);
+		this.queue = other.queue == null ? null : new String(other.queue);
+		this.configDirectory = other.configDirectory;
+		this.dbMapper = other.dbMapper;
+	}
 
 	public HomeElementDbMapper getDbMapper() {
 		return dbMapper;
@@ -72,7 +84,7 @@ public abstract class HomeElement {
 				} else {
 					throw new HomeAutomationException("Invalid mapper class : " + mapperClassname);
 				}
-			} catch (ClassNotFoundException  | InstantiationException  | IllegalAccessException e) {
+			} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
 				throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
 			}
 		}
@@ -84,7 +96,19 @@ public abstract class HomeElement {
 	}
 
 	public void setLastedMessageId(String action, String correlationId) {
-		//nothing to do
+		// nothing to do
+	}
+
+	@Override
+	public int compareTo(HomeElement o) {
+		if (o == null) {
+			return -1;
+		}
+		String oId = o.getId();
+		if (this.id == null) {
+			return oId == null ? 0 : 1;
+		}
+		return id.compareTo(oId);
 	}
 
 }

@@ -341,4 +341,12 @@ public class Server {
 			}
 		}
 	}
+	
+	public void validateSensor(GenericSensor sensor) throws HomeAutomationException{
+		
+	}
+	
+	public void saveSensor(GenericSensor sensor){
+		
+	}
 }
