@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:c="http://java.sun.com/jsp/jstl/core" xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+	<ui:define name="content">
+		<h:outputText value="Invalid sensor ID - edit cannot be possible." rendered="#{sessionScope['editedElt'] == null}" />
+		<h:panelGrid columns="1" rendered="#{sessionScope['editedElt'] != null}">
+			<c:set var="sensor" value="#{sessionScope['editedElt']}" />
+			<h:outputText value="Edit the sensor #{sensor.id}" />
+			<h:panelGrid columns="2">
+				<h:outputText value="Id : " rendered="#{sensor.newInstance}" />
+				<h:inputText value="#{sensor.id}" rendered="#{sensor.newInstance}" />
+				<h:outputText value="Label : " />
+				<h:inputText value="#{sensor.label}" />
+				<h:outputText value="Queue : " />
+				<h:inputText value="#{sensor.queue}" />
+				<h:outputText value="Config directory : " rendered="#{!sensor.newInstance}" />
+				<h:outputText value="#{sensor.configDirectory}" rendered="#{!sensor.newInstance}" />
+				<h:outputText value="DB mapper : " />
+				<h:outputText value="#{sensor.dbMapperClass}" rendered="#{!sensor.newInstance and ! empty sensor.dbMapperClass}" />
+				<h:inputText value="#{sensor.dbMapperClass}" rendered="#{sensor.newInstance or empty sensor.dbMapperClass}">
+					<f:converter converterId="ClassConverter" />
+				</h:inputText>
+				<h:outputText value="Latest value : " rendered="#{!sensor.newInstance}" />
+				<h:outputText value="#{sensor.value}" rendered="#{!sensor.newInstance}" />
+			</h:panelGrid>
+			<h:panelGrid columns="2">
+				<h:commandButton action="#{sensorsBean.cancelCurrentBeanEdition}" value="Cancel" />
+				<h:commandButton action="#{sensorsBean.saveCurrentBean}" value="Save" />
+			</h:panelGrid>
+		</h:panelGrid>
+		<h:inputHidden value="#{sensor.newInstance}" />
+		<h:inputHidden value="#{sensor.configDirectory}" rendered="#{!sensor.newInstance}">
+			<f:converter converterId="FileConverter" />
+		</h:inputHidden>
+		<h:inputHidden value="#{sensor.dbMapperClass}" rendered="#{!sensor.newInstance}">
+			<f:converter converterId="ClassConverter" />
+		</h:inputHidden>
+		<h:inputHidden value="#{sensor.value}" />
+	</ui:define>
+</ui:composition>
+</html>

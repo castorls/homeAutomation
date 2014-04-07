@@ -9,7 +9,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class MessageHelper {
+public class JSONHelper {
 	private static ObjectMapper mapper = new ObjectMapper();
 
 	public static ObjectMapper getMapper() {
@@ -17,11 +17,15 @@ public class MessageHelper {
 	}
 
 	public static void setMapper(ObjectMapper mapper) {
-		MessageHelper.mapper = mapper;
+		JSONHelper.mapper = mapper;
 	}
 
 	public static String serialize(Message msg) throws JsonProcessingException {
 		return mapper.writeValueAsString(msg);
+	}
+	
+	public static String serialize(Object obj) throws JsonProcessingException {
+		return mapper.writeValueAsString(obj);
 	}
 
 	public static Message deserialize(String msg) throws JsonParseException, JsonMappingException, IOException {
@@ -32,5 +36,9 @@ public class MessageHelper {
 		DecimalFormat numberFormat = new DecimalFormat("0.##");
 		double doubleValue = numberFormat.parse(msg.getContent()).doubleValue();
 		return doubleValue;
+	}
+	
+	public static String getValue(Message msg){
+		return msg.getContent();
 	}
 }

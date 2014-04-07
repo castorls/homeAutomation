@@ -3,6 +3,14 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd"
 	version="2.2">
+	<converter>
+		<converter-id>ClassConverter</converter-id>
+		<converter-class>admin.console.converters.ClassConverter</converter-class>
+	</converter>
+	<converter>
+		<converter-id>FileConverter</converter-id>
+		<converter-class>admin.console.converters.FileConverter</converter-class>
+	</converter>
 	<managed-bean>
 		<managed-bean-name>loginBean</managed-bean-name>
 		<managed-bean-class>server.LoginBean</managed-bean-class>
@@ -42,6 +50,11 @@
 			<to-view-id>/sensors/list.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
+			<from-action>#{sensorsBean.saveCurrentBean}</from-action>
+			<from-outcome>errorEdit</from-outcome>
+			<to-view-id>/sensors/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
 			<from-action>#{sensorsBean.doNew}</from-action>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/sensors/edit.xhtml</to-view-id>
@@ -50,6 +63,16 @@
 			<from-action>#{sensorsBean.edit}</from-action>
 			<from-outcome>success</from-outcome>
 			<to-view-id>/sensors/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.delete}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{sensorsBean.history}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/sensors/history.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
 			<from-action>#{sensorsBean.doList}</from-action>

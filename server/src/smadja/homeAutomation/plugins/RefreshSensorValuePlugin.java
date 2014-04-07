@@ -2,9 +2,9 @@ package smadja.homeAutomation.plugins;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -58,12 +58,12 @@ public class RefreshSensorValuePlugin extends Plugin {
 		final long expiration = this.refreshDelay + 1000L;
 		timer.scheduleAtFixedRate(new TimerTask() {
 			public void run() {
-				List<HomeElement> eltList = PluginHelper.filterElementList(server.getHomeElementList(), GenericSensor.class);
-				if (eltList.isEmpty()) {
+				Set<HomeElement> eltSet = PluginHelper.filterElementSet(server.getHomeElementSet(), GenericSensor.class);
+				if (eltSet.isEmpty()) {
 					return;
 				}
 				logger.info("Refresh sensor value");
-				for (HomeElement elt : eltList) {
+				for (HomeElement elt : eltSet) {
 					String id = JmsHelper.sendHomeMessage(server.getQueue(elt.getQueue()), elt.getId(), "refresh", null, expiration);
 					correlationIdMap.put(elt, id);
 				}

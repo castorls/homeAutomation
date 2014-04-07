@@ -1,4 +1,4 @@
-package smadja.homeAutomation.server;
+package smadja.homeAutomation;
 
 import java.beans.PropertyVetoException;
 import java.io.File;

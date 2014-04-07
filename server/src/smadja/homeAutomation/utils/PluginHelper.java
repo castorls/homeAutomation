@@ -1,27 +1,27 @@
 package smadja.homeAutomation.utils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import smadja.homeAutomation.model.HomeElement;
 
 public class PluginHelper {
 
-	public static List<HomeElement> filterElementList(List<HomeElement> eltList, Class<?> clazz) {
-		if (eltList == null || eltList.isEmpty()) {
-			return new ArrayList<HomeElement>();
+	public static Set<HomeElement> filterElementSet(Set<HomeElement> eltSet, Class<?> clazz) {
+		if (eltSet == null || eltSet.isEmpty()) {
+			return new HashSet<HomeElement>();
 		}
-		List<HomeElement> returnList = new ArrayList<HomeElement>();
+		Set<HomeElement> returnSet = new HashSet<HomeElement>();
 		if (clazz == null) {
-			returnList.addAll(eltList);
+			returnSet.addAll(eltSet);
 		} else {
-			for (HomeElement elt : eltList) {
+			for (HomeElement elt : eltSet) {
 				if (clazz.isAssignableFrom(elt.getClass())) {
-					returnList.add(elt);
+					returnSet.add(elt);
 				}
 			}
 		}
-		return returnList;
+		return returnSet;
 	}
 
 }

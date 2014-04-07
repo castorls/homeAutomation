@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <pageflow:Pageflow xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:pageflow="http://www.sybase.com/suade/pageflow" id="pf13923309456550" configfile="/server/WebContent/WEB-INF/faces-config.xml">
-  <nodes xsi:type="pageflow:PFPage" name="index.xhtml" x="156" y="240" id="pf13952752848690" referenceLink="//@navigationRule.1/@navigationCase.2/@toViewId|" outlinks="pf13952752848691" inlinks="pf139534541331510" path="/index.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="sensors/list.xhtml" x="324" y="336" id="pf13952752848692" referenceLink="//@navigationRule.0/@navigationCase.0/@toViewId|" inlinks="pf13952752848691" path="/sensors/list.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="todo.xhtml" x="360" y="48" id="pf13953444012003" referenceLink="//@navigationRule.1/@navigationCase.3/@toViewId|" inlinks="pf13953444012004 pf139534541963611" path="/todo.xhtml"/>
-  <nodes xsi:type="pageflow:PFPage" name="catalog" x="96" y="48" id="pf13953444012005" referenceLink="//@navigationRule.1/@fromViewId|" outlinks="pf13953444012006 pf13953444012004 pf139534541331510 pf139534541963611" path="/*"/>
-  <nodes xsi:type="pageflow:PFPage" name="error.xhtml" x="240" y="119" id="pf13953444012007" referenceLink="//@navigationRule.1/@navigationCase.0/@toViewId|" inlinks="pf13953444012006" path="/error.xhtml"/>
-  <links id="pf13952752848691" target="pf13952752848692" source="pf13952752848690" outcome="success" fromaction="#{sensorsBean.doList}"/>
+  <nodes xsi:type="pageflow:PFPage" name="index.xhtml" x="338" y="178" id="pf13952752848690" referenceLink="//@navigationRule.0/@navigationCase.7/@toViewId|" inlinks="pf139534541331510" path="/index.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sensors/list.xhtml" x="338" y="562" id="pf13952752848692" referenceLink="//@navigationRule.0/@navigationCase.5/@toViewId|" inlinks="pf13955190114060 pf13955190114061 pf13955190114062 pf13955263831539" path="/sensors/list.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="todo.xhtml" x="338" y="946" id="pf13953444012003" referenceLink="//@navigationRule.0/@navigationCase.8/@toViewId|" inlinks="pf13953444012004 pf139534541963611" path="/todo.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="catalog" x="122" y="946" id="pf13953444012005" referenceLink="//@navigationRule.0/@fromViewId|" outlinks="pf13953444012006 pf13953444012004 pf139534541331510 pf139534541963611 pf13955190114060 pf13955190114061 pf13955190114063 pf13955190114064 pf13955190114062 pf13955201006316 pf13955263684667 pf13955263831539" path="/*"/>
+  <nodes xsi:type="pageflow:PFPage" name="error.xhtml" x="338" y="1330" id="pf13953444012007" referenceLink="//@navigationRule.0/@navigationCase.5/@toViewId|" inlinks="pf13953444012006" path="/error.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sensors/edit.xhtml" x="338" y="1714" id="pf13955190114065" referenceLink="//@navigationRule.0/@navigationCase.3/@toViewId|" inlinks="pf13955190114063 pf13955190114064 pf13955201006316" path="/sensors/edit.xhtml"/>
+  <nodes xsi:type="pageflow:PFPage" name="sensors/history.xhtml" id="pf13955263684668" referenceLink="//@navigationRule.0/@navigationCase.5/@toViewId|" inlinks="pf13955263684667" path="/sensors/history.xhtml"/>
   <links id="pf13953444012006" target="pf13953444012007" source="pf13953444012005" outcome="error"/>
   <links id="pf13953444012004" target="pf13953444012003" source="pf13953444012005" outcome="todo"/>
   <links id="pf139534541331510" target="pf13952752848690" source="pf13953444012005" outcome="home"/>
   <links id="pf139534541963611" target="pf13953444012003" source="pf13953444012005" outcome="view"/>
+  <links id="pf13955190114060" target="pf13952752848692" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.cancelCurrentBeanEdition}"/>
+  <links id="pf13955190114061" target="pf13952752848692" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.saveCurrentBean}"/>
+  <links id="pf13955190114063" target="pf13955190114065" source="pf13953444012005" outcome="errorEdit" fromaction="#{sensorsBean.saveCurrentBean}"/>
+  <links id="pf13955190114064" target="pf13955190114065" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.edit}"/>
+  <links id="pf13955190114062" target="pf13952752848692" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.doList}"/>
+  <links id="pf13955201006316" target="pf13955190114065" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.doNew}"/>
+  <links id="pf13955263684667" target="pf13955263684668" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.history}"/>
+  <links id="pf13955263831539" target="pf13952752848692" source="pf13953444012005" outcome="success" fromaction="#{sensorsBean.delete}"/>
 </pageflow:Pageflow>

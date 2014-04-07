@@ -60,6 +60,9 @@ public class ICSPlugin extends Plugin {
 
 	@Override
 	public boolean onMessage(Message msg, boolean shouldAcknowledge) {
+		if(msg.getTargetElement() == null){
+			return false;
+		}
 		if (msg.getTargetElement().equals(this.getClass().getName())) {
 			if (msg.getContent().contains("refreshContent")) {
 				refreshFromICS();

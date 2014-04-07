@@ -80,7 +80,7 @@ public class JmsHelper {
 			connection.start();			
 			TextMessage jmsMsg = session.createTextMessage();
 			jmsMsg.setJMSCorrelationID(correlationId);
-			jmsMsg.setText(MessageHelper.serialize(msg));
+			jmsMsg.setText(JSONHelper.serialize(msg));
 			if(expiration > 0){
 				jmsMsg.setJMSExpiration(System.currentTimeMillis() + expiration);
 			}

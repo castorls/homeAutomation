@@ -9,29 +9,37 @@ import java.sql.SQLException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.DBUtil;
 import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 import smadja.homeAutomation.model.HomeMessageListener;
+import smadja.homeAutomation.model.JSONHelper;
 import smadja.homeAutomation.model.JmsReceiver;
 import smadja.homeAutomation.model.Message;
-import smadja.homeAutomation.model.MessageHelper;
 import smadja.homeAutomation.model.Parameter;
 import smadja.homeAutomation.model.QueueParameter;
 import smadja.homeAutomation.model.QueueReceiverParameter;
+import smadja.homeAutomation.model.helper.HomeElementHelper;
 import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
 public class Server {
 
+	public static final String PLUGINS = "plugins";
+	public static final String CONF_PROP = "conf.prop";
+	public static final String ELEMENTS = "elements";
 	public static final String ACTION_QUEUE = "ACTION_QUEUE";
 	public static final String SENSOR_QUEUE = "SENSOR_QUEUE";
 
@@ -41,8 +49,8 @@ public class Server {
 	private Parameter serverParameter = null;
 	private Properties serverProp = null;
 	private File appHome = null;
-	private List<Plugin> pluginsList = new ArrayList<Plugin>();
-	private List<HomeElement> eltsList = new ArrayList<HomeElement>();
+	private Set<Plugin> pluginsList = new HashSet<Plugin>();
+	private Set<HomeElement> eltsSet = new HashSet<HomeElement>();
 	private List<Thread> threadList = new ArrayList<Thread>();
 	private List<JmsReceiver> receiverList = new ArrayList<JmsReceiver>();
 	private Map<String, QueueParameter> queueMap = new HashMap<String, QueueParameter>();
@@ -98,8 +106,8 @@ public class Server {
 
 	private void initDb() throws HomeAutomationException {
 		List<File> sqlList = new ArrayList<File>();
-		if (!eltsList.isEmpty()) {
-			for (HomeElement elt : eltsList) {
+		if (!eltsSet.isEmpty()) {
+			for (HomeElement elt : eltsSet) {
 				if (elt != null) {
 					File[] children = elt.getConfigDirectory().listFiles();
 					if (children != null && children.length > 0) {
@@ -180,7 +188,7 @@ public class Server {
 	}
 
 	private void initPlugins() throws HomeAutomationException {
-		File pluginDir = new File(appHome, "plugins");
+		File pluginDir = getPluginsDir();
 		List<File> pluginConfList = getConfigurationsList(pluginDir);
 		if (!pluginConfList.isEmpty()) {
 			for (File confFile : pluginConfList) {
@@ -191,16 +199,26 @@ public class Server {
 		}
 	}
 
+	public File getPluginsDir() {
+		File pluginDir = new File(appHome, PLUGINS);
+		return pluginDir;
+	}
+
 	private void initElements() throws HomeAutomationException {
-		File elementsDir = new File(appHome, "elements");
+		File elementsDir = getElementsDir();
 		List<File> eltsConfList = getConfigurationsList(elementsDir);
 		if (!eltsConfList.isEmpty()) {
 			for (File confFile : eltsConfList) {
 				logger.info("Initialize element " + confFile.getParent());
-				HomeElement elt = HomeElementBuilder.build(confFile);
-				eltsList.add(elt);
+				HomeElement elt = HomeElementHelper.build(confFile);
+				eltsSet.add(elt);
 			}
 		}
+	}
+
+	public File getElementsDir() {
+		File elementsDir = new File(appHome, ELEMENTS);
+		return elementsDir;
 	}
 
 	private List<File> getConfigurationsList(File pluginDir) {
@@ -211,7 +229,7 @@ public class Server {
 		}
 		for (File child : dirList) {
 			if (child.isDirectory()) {
-				File confFile = new File(child, "conf.prop");
+				File confFile = new File(child, CONF_PROP);
 				if (confFile.exists()) {
 					pluginList.add(confFile);
 				}
@@ -275,8 +293,8 @@ public class Server {
 
 	}
 
-	public List<HomeElement> getHomeElementList() {
-		return eltsList;
+	public Set<HomeElement> getHomeElementSet() {
+		return eltsSet;
 	}
 
 	public QueueParameter getQueue(String queueName) {
@@ -299,11 +317,11 @@ public class Server {
 		if (id == null || id.trim().equals("")) {
 			return null;
 		}
-		List<HomeElement> eltList = getHomeElementList();
-		if (eltList.isEmpty()) {
+		Set<HomeElement> eltSet = getHomeElementSet();
+		if (eltSet.isEmpty()) {
 			return null;
 		}
-		for (HomeElement elt : eltList) {
+		for (HomeElement elt : eltSet) {
 			if (id.equals(elt.getId())) {
 				return elt;
 			}
@@ -315,9 +333,9 @@ public class Server {
 		if (homeElt == null || msg == null) {
 			return;
 		}
-		if(homeElt instanceof GenericSensor){
+		if (homeElt instanceof GenericSensor) {
 			try {
-				((GenericSensor)homeElt).setValue(MessageHelper.getDoubleValue(msg));
+				((GenericSensor) homeElt).setValue(JSONHelper.getDoubleValue(msg));
 			} catch (ParseException e) {
 				logger.debug(e.getMessage(), e);
 			}
@@ -341,12 +359,49 @@ public class Server {
 			}
 		}
 	}
-	
-	public void validateSensor(GenericSensor sensor) throws HomeAutomationException{
-		
+
+	public void validateSensor(GenericSensor sensor, boolean isNew) throws HomeAutomationException {
+		// check if element are empty
+		String id = sensor.getId();
+		if (id == null || "".equals(id.trim())) {
+			throw new HomeAutomationException("Id must not be an empty string.");
+		}
+		if (sensor.getLabel() == null || "".equals(sensor.getLabel().trim())) {
+			throw new HomeAutomationException("Label must not be an empty string.");
+		}
+
+		// check if id is unique
+		if (isNew) {
+			Set<HomeElement> eltSet = getHomeElementSet();
+			if (eltSet != null && !eltSet.isEmpty()) {
+				for (HomeElement elt : eltSet) {
+					if (id.equals(elt.getId())) {
+						throw new HomeAutomationException("Id '" + id + "' already exist in the configuration.");
+					}
+				}
+			}
+		}
 	}
-	
-	public void saveSensor(GenericSensor sensor){
-		
+
+	public synchronized void saveSensor(GenericSensor sensor) throws HomeAutomationException {
+		File dirFile = new File(getElementsDir(), sensor.getId());
+		if (!dirFile.exists() && !dirFile.mkdirs()) {
+			throw new HomeAutomationException("Cannot create configuration directory '" + dirFile.getAbsolutePath() + "'");
+		}
+		File confFile = new File(dirFile, CONF_PROP);
+		sensor.setConfigDirectory(dirFile);
+		HomeElementHelper.saveConf(sensor, confFile);
+		eltsSet.remove(sensor);
+		eltsSet.add(sensor);
+	}
+
+	public void deleteHomeElementById(String eltId) throws HomeAutomationException {
+		File dirFile = new File(getElementsDir(), eltId);
+		try {
+			FileUtils.deleteDirectory(dirFile);
+			eltsSet.remove(getHomeElementById(eltId));
+		} catch (IOException e) {
+			throw new HomeAutomationException("Cannot delete configuration directory '" + dirFile.getAbsolutePath() + "' : "+e.getMessage());
+		}
 	}
 }

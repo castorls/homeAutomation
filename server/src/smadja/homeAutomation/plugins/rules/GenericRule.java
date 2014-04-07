@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.Message;
-import smadja.homeAutomation.model.MessageHelper;
+import smadja.homeAutomation.model.JSONHelper;
 import smadja.homeAutomation.server.Server;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -56,7 +56,7 @@ public class GenericRule extends Rule {
 		String emitter = msg.getEmitter();
 		if (emitterRegex.matcher(emitter).matches()) {
 			try {
-				Double value = MessageHelper.getDoubleValue(msg);
+				Double value = JSONHelper.getDoubleValue(msg);
 				if (operator.equalsIgnoreCase(Operators.EQUALS.name()) && thresholdValue.equals(value)) {
 					sendMessageToSender(emitter, server, Operators.EQUALS, value);
 				} else if (operator.equalsIgnoreCase(Operators.DIFFERENT.name()) && !thresholdValue.equals(value)) {
@@ -91,7 +91,7 @@ public class GenericRule extends Rule {
 		contentMap.put("ACTION", action);
 		contentMap.put("OPERATOR", operator.name());
 		contentMap.put("VALUE", value.toString());
-		returnedMsg.setContent(MessageHelper.getMapper().writeValueAsString(contentMap));
+		returnedMsg.setContent(JSONHelper.getMapper().writeValueAsString(contentMap));
 		long expiration = System.currentTimeMillis() + defaultExpiration * 1000L;
 		sendActionMessage(returnedMsg, action, server, expiration);
 	}

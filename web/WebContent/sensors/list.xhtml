@@ -35,9 +35,27 @@
 				</f:facet>
 			</rich:column>
 			<rich:column>
+				<h:outputText value="#{elt.configDirectory}" />
+				<f:facet name="header">
+					<h:outputText value="Config Dir" />
+				</f:facet>
+			</rich:column>
+			<rich:column>
+				<h:outputText value="#{elt.dbMapperClass}" />
+				<f:facet name="header">
+					<h:outputText value="DB mapper Class" />
+				</f:facet>
+			</rich:column>
+			<rich:column>
+				<h:commandButton action="#{sensorsBean.history}" value="History">
+					<f:param name="eltId" value="#{elt.id}" />
+				</h:commandButton>
 				<h:commandButton action="#{sensorsBean.edit}" value="Edit">
 					<f:param name="eltId" value="#{elt.id}" />
 				</h:commandButton>
+				<h:commandButton action="#{sensorsBean.delete}" onclick="return confirm('Are you sure?')" value="Delete">
+					<f:param name="eltId" value="#{elt.id}" />
+				</h:commandButton>				 
 				<f:facet name="header">
 					<h:outputText value="Actions" />
 				</f:facet>

@@ -21,13 +21,13 @@ public class MessageHelperTest extends TestCase {
 		msg.setTransientFlag(true);
 		String value = null;
 		try {
-			value = MessageHelper.serialize(msg);
+			value = JSONHelper.serialize(msg);
 		} catch (JsonProcessingException e) {
 			assertNotSame(null,e);
 		}
 		assertNotSame(null, value);
 		try {
-			Message msg2 = MessageHelper.deserialize(value);
+			Message msg2 = JSONHelper.deserialize(value);
 			assertNotSame("null", msg2);
 			assertEquals(content, msg2.getContent());
 			assertEquals(emitter, msg2.getEmitter());

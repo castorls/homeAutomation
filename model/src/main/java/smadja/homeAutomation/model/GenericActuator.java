@@ -1,6 +1,6 @@
 package smadja.homeAutomation.model;
 
-public class GenericActuator extends HomeElement {
+public class GenericActuator extends HomeElement implements Comparable<HomeElement> {
 	
 	private String state = null;
 
@@ -29,5 +29,24 @@ public class GenericActuator extends HomeElement {
 		if(action != null){
 			state = action;
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + getClass().getName().hashCode();
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		return true;
 	}
 }
