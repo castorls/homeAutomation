@@ -2,6 +2,9 @@ package smadja.homeAutomation.model;
 
 import java.io.File;
 
+import org.apache.log4j.Logger;
+
+import smadja.homeAutomation.model.helper.HomeElementHelper;
 import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -18,10 +21,13 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 	    @Type(value = GenericActuator.class, name = "GenericActuator") }) 
 public abstract class HomeElement implements Comparable<HomeElement> {
 
+	private static Logger logger = Logger.getLogger(HomeElement.class);
+	
 	private String id;
 	private String label;
 	private String queue;
 	private File configDirectory;
+	private String dbMapperClass;
 	@JsonIgnore
 	private HomeElementDbMapper dbMapper;
 
@@ -35,6 +41,7 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 		this.queue = other.queue == null ? null : new String(other.queue);
 		this.configDirectory = other.configDirectory;
 		this.dbMapper = other.dbMapper;
+		this.dbMapperClass = other.dbMapperClass;
 	}
 
 	public HomeElementDbMapper getDbMapper() {
@@ -43,6 +50,7 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 
 	public void setDbMapper(HomeElementDbMapper dbMapper) {
 		this.dbMapper = dbMapper;
+		this.dbMapperClass = dbMapper == null ? null:dbMapper.getClass().getName();
 	}
 
 	public File getConfigDirectory() {
@@ -84,6 +92,19 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 
 	public void setLastedMessageId(String action, String correlationId) {
 		// nothing to do
+	}
+
+	public String getDbMapperClass() {
+		return dbMapperClass;
+	}
+
+	public void setDbMapperClass(String dbMapperClass) {
+		this.dbMapperClass = dbMapperClass;
+		try {
+			this.dbMapper = HomeElementHelper.getMapperInstance(dbMapperClass);
+		} catch (HomeAutomationException e) {
+			logger.warn("Cannot create dbMapper instance for "+dbMapperClass, e);
+		}
 	}
 
 	@Override

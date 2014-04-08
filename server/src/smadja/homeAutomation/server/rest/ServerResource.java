@@ -8,18 +8,19 @@ import java.util.Set;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 
 import smadja.homeAutomation.DBUtil;
 import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HistoryData;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
+import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 import smadja.homeAutomation.server.Server;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,14 +34,13 @@ public class ServerResource {
 	public Set<HomeElement> getHomeElementSet() {
 		return Server.getInstance().getHomeElementSet();
 	}
-	
+
 	@GET
 	@Path("/homeElementById/{id}")
 	@Produces("application/json")
 	public HomeElement getHomeElementById(@PathParam("id") String id) {
 		return Server.getInstance().getHomeElementById(id);
 	}
-	
 
 	@GET
 	@Path("/sensorHistory/{id}")
@@ -54,9 +54,13 @@ public class ServerResource {
 		if (elt == null) {
 			return null;
 		}
+		HomeElementDbMapper dbMapper = elt.getDbMapper();
+		if (dbMapper == null) {
+			return null;
+		}
 		Connection connection = DBUtil.getConnection();
 		try {
-			List<HistoryData> historyList = elt.getDbMapper().getHistoryData(elt, connection);
+			List<HistoryData> historyList = dbMapper.getHistoryData(elt, connection);
 			return historyList;
 		} catch (HomeAutomationException e) {
 			throw new HomeAutomationException(e.getMessage(), e);
@@ -71,18 +75,17 @@ public class ServerResource {
 		}
 
 	}
-	
+
 	@DELETE
 	@Path("/homeElement/{id}")
-	@Consumes("application/json")
 	public void deleteHomeElementById(@PathParam("id") String id) throws HomeAutomationException {
 		Server.getInstance().deleteHomeElementById(id);
 	}
-	
+
 	@POST
 	@Path("/homeElement/validate")
-	@Consumes("application/json")
-	public void validateSensor(@QueryParam("sensor") String sensor, @QueryParam("newInstance") boolean newInstance) throws HomeAutomationException {
+	@Consumes("application/x-www-form-urlencoded")
+	public void validateSensor(@FormParam("sensor") String sensor, @FormParam("newInstance") boolean newInstance) throws HomeAutomationException {
 		GenericSensor sensorObj;
 		try {
 			sensorObj = new ObjectMapper().readValue(sensor, GenericSensor.class);
@@ -94,12 +97,21 @@ public class ServerResource {
 
 	@POST
 	@Path("/homeElement/save")
-	@Consumes("application/json")
-	public void saveSensor(@QueryParam("sensor") String sensor) throws HomeAutomationException {
+	@Consumes("application/x-www-form-urlencoded")
+	public void saveSensor(@FormParam("sensor") String sensor, @FormParam("newInstance") boolean newInstance) throws HomeAutomationException {
 		GenericSensor sensorObj;
 		try {
 			sensorObj = new ObjectMapper().readValue(sensor, GenericSensor.class);
-			Server.getInstance().saveSensor(sensorObj);
+			Server instance = Server.getInstance();
+			instance.saveSensor(sensorObj);
+			if (newInstance) {
+				HomeElement newElt = instance.getHomeElementById(sensorObj.getId());
+				if (newElt != null) {
+					sensorObj.getDbMapper().generateInitPostgresqlSQL(sensorObj);
+				} else {
+					throw new HomeAutomationException("Invalid new sensor with id '" + sensorObj.getId() + "'");
+				}
+			}
 		} catch (IOException e) {
 			throw new HomeAutomationException(e.getMessage(), e);
 		}

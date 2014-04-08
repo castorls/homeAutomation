@@ -1,5 +1,8 @@
 package smadja.homeAutomation.model.mapper;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -66,6 +69,26 @@ public class GenericActuatorMapper implements HomeElementDbMapper {
 		} catch (SQLException e) {
 			logger.debug(e.getMessage(), e);
 			throw new HomeAutomationException("Cannot execute history request for " + homeElt.getId() + ":" + e.getMessage(), e);
+		}
+	}
+
+	@Override
+	public void generateInitPostgresqlSQL(HomeElement homeElt) throws HomeAutomationException {
+		StringBuilder content = new StringBuilder("CREATE TABLE IF NOT EXISTS "+getTableName(homeElt)+" (\n")
+		.append("eventDate timestamp NOT NULL,\n")
+		.append("value numeric default 0,\n")
+		.append("constraint dateConstraint PRIMARY KEY (eventDate)\n")
+		.append(");\n");
+		
+		File initSQL = new File(homeElt.getConfigDirectory(), "init_pg.sql"); 
+		try {
+			FileWriter writer = new FileWriter(initSQL);
+			writer.write(content.toString());
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			logger.debug(e.getMessage(), e);
+			throw new HomeAutomationException("Cannot generate init_pg.sql file for " + homeElt.getId() + ":" + e.getMessage(), e);
 		}
 	}
 

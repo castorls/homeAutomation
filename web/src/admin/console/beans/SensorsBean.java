@@ -103,7 +103,7 @@ public class SensorsBean {
 				GenericSensor sensor = sensorBean.getSensor();
 
 				server.validateSensor(sensor, sensorBean.isNewInstance());
-				server.saveSensor(sensor);
+				server.saveSensor(sensor, sensorBean.isNewInstance());
 				sessionMap.remove("editedElt");
 			} catch (HomeAutomationException e) {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(e.getMessage()));
@@ -163,7 +163,11 @@ public class SensorsBean {
 			ExternalContext externalContext = facesContext.getExternalContext();
 			externalContext.setResponseContentType("application/json");
 			externalContext.setResponseCharacterEncoding("UTF-8");
-			externalContext.getResponseOutputWriter().write(ServerClient.getInstance().getSensorHistoryJson(externalContext.getRequestParameterMap().get("eltId")));
+			String sensorHistoryJson = ServerClient.getInstance().getSensorHistoryJson(externalContext.getRequestParameterMap().get("eltId"));
+			if(sensorHistoryJson == null){
+				sensorHistoryJson = "{\"error\":\"no data to display\"}";
+			}
+			externalContext.getResponseOutputWriter().write(sensorHistoryJson);
 			facesContext.responseComplete();
 		} catch (HomeAutomationException | JsonProcessingException e) {
 			throw new IOException(e.getMessage(), e);

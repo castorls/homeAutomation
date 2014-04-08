@@ -392,7 +392,7 @@ public class Server {
 		sensor.setConfigDirectory(dirFile);
 		HomeElementHelper.saveConf(sensor, confFile);
 		eltsSet.remove(sensor);
-		eltsSet.add(sensor);
+		eltsSet.add(HomeElementHelper.build(confFile));
 	}
 
 	public void deleteHomeElementById(String eltId) throws HomeAutomationException {

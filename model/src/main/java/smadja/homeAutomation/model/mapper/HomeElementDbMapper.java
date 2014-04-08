@@ -14,4 +14,6 @@ public interface HomeElementDbMapper {
 	void saveValue(HomeElement homeElt, Message msg, Connection connection)throws HomeAutomationException;
 
 	List<HistoryData> getHistoryData(HomeElement homeElt, Connection connection) throws HomeAutomationException;
+	
+	void generateInitPostgresqlSQL(HomeElement homeElt) throws HomeAutomationException;
 }

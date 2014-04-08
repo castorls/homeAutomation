@@ -1,5 +1,8 @@
 package smadja.homeAutomation.model.mapper;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,8 +17,8 @@ import org.apache.log4j.Logger;
 import smadja.homeAutomation.model.HistoryData;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
-import smadja.homeAutomation.model.Message;
 import smadja.homeAutomation.model.JSONHelper;
+import smadja.homeAutomation.model.Message;
 
 public class GenericSensorMapper implements HomeElementDbMapper {
 
@@ -75,5 +78,26 @@ public class GenericSensorMapper implements HomeElementDbMapper {
 			throw new HomeAutomationException("Cannot execute history request for " + homeElt.getId() + ":" + e.getMessage(), e);
 		}
 	}
-
+	
+	@Override
+	public void generateInitPostgresqlSQL(HomeElement homeElt) throws HomeAutomationException{
+		StringBuilder content = new StringBuilder("CREATE TABLE IF NOT EXISTS "+getTableName(homeElt)+" (\n")
+		.append("eventDate timestamp NOT NULL,\n")
+		.append("value varchar(50),\n")
+		.append("constraint dateConstraint PRIMARY KEY (eventDate)\n")
+		.append(");\n");
+		
+		File initSQL = new File(homeElt.getConfigDirectory(), "init_pg.sql"); 
+		try {
+			FileWriter writer = new FileWriter(initSQL);
+			writer.write(content.toString());
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			logger.debug(e.getMessage(), e);
+			throw new HomeAutomationException("Cannot generate init_pg.sql file for " + homeElt.getId() + ":" + e.getMessage(), e);
+		}
+		
+	}
+	
 }

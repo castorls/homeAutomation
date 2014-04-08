@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 
+import smadja.homeAutomation.model.HomeAutomationException;
+import smadja.homeAutomation.model.helper.HomeElementHelper;
 import smadja.homeAutomation.model.mapper.GenericSensorMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -26,8 +28,8 @@ public class GenericSensorMapperDeserializer extends JsonDeserializer<GenericSen
 		        	return null;
 		        }
 		        try {
-					return (GenericSensorMapper) Class.forName(classname).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					return (GenericSensorMapper) HomeElementHelper.getMapperInstance(classname);
+				} catch (HomeAutomationException e) {
 					logger.warn(e.getMessage(), e);
 					throw new IOException(e);
 				}

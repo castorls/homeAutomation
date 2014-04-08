@@ -56,6 +56,9 @@ public class HomeElementHelper {
 	}
 
 	public static HomeElementDbMapper getMapperInstance(String mapperClassname) throws HomeAutomationException {
+		if(mapperClassname == null){
+			return null;
+		}
 		try {
 			Class<?> clazz = Class.forName(mapperClassname);
 			if (HomeElementDbMapper.class.isAssignableFrom(clazz)) {

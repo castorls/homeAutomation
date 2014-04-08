@@ -11,8 +11,6 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.MediaType;
 
-import org.apache.log4j.Logger;
-
 import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HistoryData;
 import smadja.homeAutomation.model.HomeAutomationException;
@@ -24,7 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class ServerClient {
 
-	private final Logger logger = Logger.getLogger(ServerClient.class);
+	//private final Logger logger = Logger.getLogger(ServerClient.class);
 	private static ServerClient instance = null;
 
 	private ServerClient() {
@@ -65,21 +63,22 @@ public class ServerClient {
 			form.param("newInstance", Boolean.toString(newInstance));
 			target.request(MediaType.APPLICATION_JSON_TYPE)			
 	        	.header("Content-type", "application/json")
-	        	.post(Entity.entity(form, MediaType.APPLICATION_JSON_TYPE));
+	        	.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 		} catch (JsonProcessingException e) {
 			throw new HomeAutomationException(e.getMessage(), e);
 		}
 
 	}
 
-	public void saveSensor(GenericSensor sensor) throws HomeAutomationException {
+	public void saveSensor(GenericSensor sensor, boolean newInstance) throws HomeAutomationException {
 		try {
 			WebTarget target = getClient().path("/main/homeElement/save");
 			Form form = new Form();
 			form.param("sensor", new ObjectMapper().writeValueAsString(sensor));
+			form.param("newInstance", Boolean.toString(newInstance));
 			target.request(MediaType.APPLICATION_JSON_TYPE)
 	        	.header("Content-type", "application/json")
-				.post(Entity.entity(form, MediaType.APPLICATION_JSON_TYPE));
+				.post(Entity.entity(form, MediaType.APPLICATION_FORM_URLENCODED_TYPE));
 		} catch (JsonProcessingException e) {
 			throw new HomeAutomationException(e.getMessage(), e);
 		}

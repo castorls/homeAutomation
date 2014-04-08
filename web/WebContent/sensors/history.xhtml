@@ -31,7 +31,19 @@
       /* Done setting the chart up? Time to render it!*/
       var myData;
       d3.json("#{facesContext.externalContext.requestContextPath}/faces/sensors/sensorData.xhtml?eltId=#{param['eltId']}", function(error, json) {
-        if (error) return console.warn(error);
+        if (error){
+        	return console.warn(error);
+        }
+        if(json.error){
+        	return d3.select('#svgContainer').append("text")
+            .attr("x", "235")
+            .attr("y", "35")
+            .attr("dy", "-.7em")
+            .attr("class", "nvd3 nv-noData")
+            .style("text-anchor", "middle")
+            .text(json.error);
+        }
+        
         var valueArray = [];
         json.forEach(function(d) {
         	valueArray.push({x: d.date, y: d.value})
