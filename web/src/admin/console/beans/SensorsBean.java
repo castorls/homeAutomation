@@ -150,11 +150,11 @@ public class SensorsBean {
 		try {
 			ServerClient.getInstance().deleteHomeElementById(eltId);
 			sessionMap.remove(sensorsListKey);
+			return doList();
 		} catch (HomeAutomationException e) {
 			ErrorBean.addException(e);
 			return "error";
 		}
-		return "success";
 	}
 
 	public void renderHistoryJson() throws IOException {

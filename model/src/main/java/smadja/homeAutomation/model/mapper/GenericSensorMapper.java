@@ -84,7 +84,7 @@ public class GenericSensorMapper implements HomeElementDbMapper {
 		StringBuilder content = new StringBuilder("CREATE TABLE IF NOT EXISTS "+getTableName(homeElt)+" (\n")
 		.append("eventDate timestamp NOT NULL,\n")
 		.append("value varchar(50),\n")
-		.append("constraint dateConstraint PRIMARY KEY (eventDate)\n")
+		.append("constraint dateConstraint_"+getTableName(homeElt)+" PRIMARY KEY (eventDate)\n")
 		.append(");\n");
 		
 		File initSQL = new File(homeElt.getConfigDirectory(), "init_pg.sql"); 
