@@ -1,102 +1,28 @@
 package admin.console.beans;
 
-import java.io.File;
+import java.io.Serializable;
+import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 
 import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HomeAutomationException;
+import smadja.homeAutomation.model.HomeElement;
+import smadja.homeAutomation.model.Position;
 import smadja.homeAutomation.model.helper.HomeElementHelper;
 import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
-public class SensorBean {
+public class SensorBean extends ElementBean implements Serializable {
 
+	private static final long serialVersionUID = 3635134589850300090L;
 	private static Logger logger = Logger.getLogger(SensorBean.class);
 
-	private String id;
-	private String label;
-	private String queue;
-	private Double value;
-	private File configDirectory;
-	private Class<? extends HomeElementDbMapper> dbMapperClass;
-	private boolean newInstance = false;
-
 	public SensorBean() {
-		this.newInstance = true;
+		super();
 	}
 
-	public SensorBean(GenericSensor sensor) {
-		this.id = sensor.getId() == null ? null : new String(sensor.getId());
-		this.label = sensor.getLabel() == null ? null : new String(sensor.getLabel());
-		this.queue = sensor.getQueue() == null ? null : new String(sensor.getQueue());
-		this.value = sensor.getValue() == null ? null : new Double(sensor.getValue());
-		this.configDirectory = sensor.getConfigDirectory() == null ? null : new File(sensor.getConfigDirectory().getAbsolutePath());
-		this.dbMapperClass = sensor.getDbMapper() == null ? null : sensor.getDbMapper().getClass();
-		this.newInstance = false;
-	}
-
-	public boolean isNewInstance() {
-		return newInstance;
-	}
-
-	public void setNewInstance(boolean newInstance) {
-		this.newInstance = newInstance;
-	}
-
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getQueue() {
-		return queue;
-	}
-
-	public void setQueue(String queue) {
-		this.queue = queue;
-	}
-
-	public Double getValue() {
-		return value;
-	}
-
-	public void setValue(Double value) {
-		this.value = value;
-	}
-
-	public File getConfigDirectory() {
-		return configDirectory;
-	}
-
-	public void setConfigDirectory(File configDirectory) {
-		this.configDirectory = configDirectory;
-	}
-
-	@SuppressWarnings("unchecked")
-	public Class<? extends HomeElementDbMapper> getDbMapperClass() {
-		if(dbMapperClass == null){
-			try {
-				return (Class<? extends HomeElementDbMapper>) Class.forName("smadja.homeAutomation.model.mapper.GenericSensorMapper");
-			} catch (ClassNotFoundException e) {
-				return null;
-			}
-		}
-		return dbMapperClass;
-	}
-
-	public void setDbMapperClass(Class<? extends HomeElementDbMapper> dbMapperClass) {
-		this.dbMapperClass = dbMapperClass;
+	public SensorBean(HomeElement elt) {
+		super(elt);
 	}
 
 	public GenericSensor getSensor() {
@@ -115,6 +41,15 @@ public class SensorBean {
 		}
 		sensor.setDbMapper(mapperInstance);
 		sensor.setConfigDirectory(this.configDirectory);
+		sensor.setPositions(this.positions);
+		if (sensor.getPositions() != null && !sensor.getPositions().isEmpty()) {
+			for (Iterator<Position> iterator = sensor.getPositions().iterator(); iterator.hasNext();) {
+				Position pos =iterator.next();
+				if (pos.getLevel() == 0 && pos.getX() == -1 && pos.getY() == -1) {
+					iterator.remove();
+				}
+			}
+		}
 		return sensor;
 	}
 

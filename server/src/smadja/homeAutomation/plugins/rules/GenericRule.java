@@ -27,7 +27,7 @@ public class GenericRule extends Rule {
 	private Double thresholdValue = null;
 	private String operator = null;
 	private String sender = null;
-	private String action = null;
+	private Double action = null;
 	private long defaultExpiration = 10 * 1000L;
 
 	public enum Operators {
@@ -42,7 +42,7 @@ public class GenericRule extends Rule {
 			thresholdValue = Double.parseDouble(prop.getProperty("threshold"));
 			operator = prop.getProperty("operator");
 			sender = prop.getProperty("sender");
-			action = prop.getProperty("action");
+			action = Double.parseDouble(prop.getProperty("action"));
 			defaultExpiration = Long.parseLong(prop.getProperty("expiration"));
 		} catch (IOException e) {
 			logger.warn(e.getMessage(), e);
@@ -88,7 +88,7 @@ public class GenericRule extends Rule {
 		returnedMsg.setEventDate(new Date());
 		returnedMsg.setTargetElement(sender);
 		Map<String, String> contentMap = new HashMap<String, String>();
-		contentMap.put("ACTION", action);
+		contentMap.put("ACTION", action == null ? "0" : action.toString());
 		contentMap.put("OPERATOR", operator.name());
 		contentMap.put("VALUE", value.toString());
 		returnedMsg.setContent(JSONHelper.getMapper().writeValueAsString(contentMap));

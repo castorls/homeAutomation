@@ -2,32 +2,34 @@ package smadja.homeAutomation.model;
 
 public class GenericActuator extends HomeElement implements Comparable<HomeElement> {
 	
-	private String state = null;
-
 	public GenericActuator(){
 		super();
 	}
 	
 	public GenericActuator(GenericActuator other){
 		super(other);
-		this.state = other.state == null ? null : new String(other.state);
 	}
 	
 	@Override
-	public boolean shouldSendAction(String action) {
-		if(state == null){
+	public boolean shouldSendAction(Double action) {
+		Double val = getValue();
+		if(val == null){
 			return true;
 		}
-		if(state.equals(action)){
+		if(action == null){
+			action = Double.valueOf(0);
+		}
+	
+		if(val.doubleValue() == action.doubleValue()){
 			return false;
 		}
 		return true;
 	}
 
 	@Override
-	public void setLastedMessageId(String action, String correlationId) {
+	public void setLastedMessageId(Double action, String correlationId) {
 		if(action != null){
-			state = action;
+			setValue(action);
 		}
 	}
 

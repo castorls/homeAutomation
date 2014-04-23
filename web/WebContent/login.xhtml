@@ -1,23 +1,32 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml"
-xmlns:h="http://java.sun.com/jsf/html"
-xmlns:f="http://java.sun.com/jsf/core"
-xmlns:ui="http://java.sun.com/jsf/facelets"
-xmlns:a4j="http://richfaces.org/a4j"
-xmlns:rich="http://richfaces.org/rich">
-<f:view>
-<h:head></h:head>
-<h:body>
-<rich:panel header="Richfaces sample validation and auto-completion">
-<h:form>
-<h:outputText value="Enter your name" />
-<h:inputText id="name" value="#{loginBean.name}">
-<rich:validator />
-</h:inputText>
-<rich:message for="name" />
-<br />
-<h:outputText value="#{loginBean.name}"></h:outputText>
-</h:form>
-</rich:panel>
-</h:body>
-</f:view>
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:a4j="http://richfaces.org/a4j"
+	xmlns:rich="http://richfaces.org/rich">
+	<f:view>
+		<h:head></h:head>
+		<h:body>
+			<form method="post" action="j_security_check" name="loginForm">
+				<h:panelGrid columns="1"
+					style="background-color: lightblue; margin: auto; color: white;">
+					<h:outputText value="Home Automation Server"
+						style="font-weight: bolder; font-size: 24px;text-align: center;" />
+					<h:panelGrid columns="2">
+						<h:outputLabel id="userNameLabel" for="j_username"
+							value="Login :" style="font-weight: bolder;" />
+						<h:inputText id="j_username" autocomplete="off" />
+						<h:outputLabel id="passwordLabel" for="j_password"
+							value="Mot de passe :" style="font-weight: bolder;" />
+						<h:inputSecret id="j_password" autocomplete="off" />
+						<div />
+						<h:panelGroup>
+							<h:commandButton type="submit" value="Login" />
+							<h:commandButton type="reset" value="Clear" />
+						</h:panelGroup>
+					</h:panelGrid>
+				</h:panelGrid>
+			</form>
+		</h:body>
+	</f:view>
 </ui:composition>

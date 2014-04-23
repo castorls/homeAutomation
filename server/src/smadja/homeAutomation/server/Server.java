@@ -22,6 +22,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
 import smadja.homeAutomation.DBUtil;
+import smadja.homeAutomation.model.GenericActuator;
 import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
@@ -55,6 +56,7 @@ public class Server {
 	private List<JmsReceiver> receiverList = new ArrayList<JmsReceiver>();
 	private Map<String, QueueParameter> queueMap = new HashMap<String, QueueParameter>();
 	private ExecutorService es = null;
+	private int levelCount = 1;
 
 	private Server() {
 		// nothing to do
@@ -83,6 +85,7 @@ public class Server {
 		try {
 			serverProp.load(new InputStreamReader(new FileInputStream(serverPropFile), "UTF-8"));
 			serverParameter = init(serverProp);
+			levelCount = Integer.parseInt((String)serverProp.get("level.count"));
 			initElements();
 			initDb();
 			initPlugins();
@@ -236,6 +239,14 @@ public class Server {
 			}
 		}
 		return pluginList;
+	}
+	
+	public int getLevelCount() {
+		return levelCount;
+	}
+
+	public void setLevelCount(int levelCount) {
+		this.levelCount = levelCount;
 	}
 
 	public void startAndWait() {
@@ -395,13 +406,48 @@ public class Server {
 		eltsSet.add(HomeElementHelper.build(confFile));
 	}
 
+	public void validateActuator(GenericActuator actuator, boolean isNew) throws HomeAutomationException {
+		// check if element are empty
+		String id = actuator.getId();
+		if (id == null || "".equals(id.trim())) {
+			throw new HomeAutomationException("Id must not be an empty string.");
+		}
+		if (actuator.getLabel() == null || "".equals(actuator.getLabel().trim())) {
+			throw new HomeAutomationException("Label must not be an empty string.");
+		}
+
+		// check if id is unique
+		if (isNew) {
+			Set<HomeElement> eltSet = getHomeElementSet();
+			if (eltSet != null && !eltSet.isEmpty()) {
+				for (HomeElement elt : eltSet) {
+					if (id.equals(elt.getId())) {
+						throw new HomeAutomationException("Id '" + id + "' already exist in the configuration.");
+					}
+				}
+			}
+		}
+	}
+
+	public synchronized void saveActuator(GenericActuator actuator) throws HomeAutomationException {
+		File dirFile = new File(getElementsDir(), actuator.getId());
+		if (!dirFile.exists() && !dirFile.mkdirs()) {
+			throw new HomeAutomationException("Cannot create configuration directory '" + dirFile.getAbsolutePath() + "'");
+		}
+		File confFile = new File(dirFile, CONF_PROP);
+		actuator.setConfigDirectory(dirFile);
+		HomeElementHelper.saveConf(actuator, confFile);
+		eltsSet.remove(actuator);
+		eltsSet.add(HomeElementHelper.build(confFile));
+	}
+
 	public void deleteHomeElementById(String eltId) throws HomeAutomationException {
 		File dirFile = new File(getElementsDir(), eltId);
 		try {
 			FileUtils.deleteDirectory(dirFile);
 			eltsSet.remove(getHomeElementById(eltId));
 		} catch (IOException e) {
-			throw new HomeAutomationException("Cannot delete configuration directory '" + dirFile.getAbsolutePath() + "' : "+e.getMessage());
+			throw new HomeAutomationException("Cannot delete configuration directory '" + dirFile.getAbsolutePath() + "' : " + e.getMessage());
 		}
 	}
 }

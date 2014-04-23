@@ -6,10 +6,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
+import smadja.homeAutomation.model.Position;
 import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
 public class HomeElementHelper {
@@ -49,6 +52,13 @@ public class HomeElementHelper {
 			if (elt.getDbMapper() != null) {
 				prop.put("mapper.classname", elt.getDbMapper().getClass().getName());
 			}
+			int index = 1;
+			if (elt.getPositions() != null) {
+				for (Position pos : elt.getPositions()) {
+					prop.put("position." + index, pos.toString());
+					index ++;
+				}
+			}
 			prop.store(new OutputStreamWriter(new FileOutputStream(confFile), "UTF-8"), (String) null);
 		} catch (IOException e) {
 			throw new HomeAutomationException("Cannot create plugin class " + e.getMessage(), e);
@@ -56,7 +66,7 @@ public class HomeElementHelper {
 	}
 
 	public static HomeElementDbMapper getMapperInstance(String mapperClassname) throws HomeAutomationException {
-		if(mapperClassname == null){
+		if (mapperClassname == null) {
 			return null;
 		}
 		try {
@@ -84,6 +94,17 @@ public class HomeElementHelper {
 		String mapperClassname = confProp.getProperty("mapper.classname");
 		if (mapperClassname != null && !"".equals(mapperClassname.trim())) {
 			elt.setDbMapper(HomeElementHelper.getMapperInstance(mapperClassname));
+		}
+		// positions
+		List<Position> positionsList = new ArrayList<Position>();
+		elt.setPositions(positionsList);
+		for (Object keyObj : confProp.keySet()) {
+			if (keyObj instanceof String) {
+				String key = (String) keyObj;
+				if (key.startsWith("position.")) {
+					positionsList.add(new Position((String) confProp.get(keyObj)));
+				}
+			}
 		}
 	}
 }

@@ -4,23 +4,57 @@
 <ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
 	<ui:define name="content">
 		<h:outputText value="Invalid sensor ID - edit cannot be possible." rendered="#{sessionScope['editedElt'] == null}" />
-		<h:panelGrid columns="1" rendered="#{sessionScope['editedElt'] != null}">
+		<h:panelGrid columns="1" rendered="#{sessionScope['editedElt'] != null}" id="sensorEditTable">
 			<c:set var="sensor" value="#{sessionScope['editedElt']}" />
 			<h:outputText value="Edit the sensor #{sensor.id}" />
 			<h:panelGrid columns="2">
 				<h:outputText value="Id : " rendered="#{sensor.newInstance}" />
 				<h:inputText value="#{sensor.id}" rendered="#{sensor.newInstance}" />
+				
 				<h:outputText value="Label : " />
 				<h:inputText value="#{sensor.label}" />
+				
 				<h:outputText value="Queue : " />
 				<h:inputText value="#{sensor.queue}" />
+				
+				<h:outputText value="Positions : " />
+				<rich:dataTable binding="#{sensorPositionTable}" var="pos" value="#{sensor.positions}"
+					styleClass="positionTable">
+					<rich:column>
+						<h:selectOneMenu value="#{pos.level}">
+				   			<f:selectItems value="#{sessionScope['levels'] }" var="l" itemLabel="#{l.label}" itemValue="#{l.value}" />
+				   		</h:selectOneMenu>
+					</rich:column>
+					<rich:column>
+						<h:inputText value="#{pos.x}"></h:inputText>
+					</rich:column>
+					<rich:column>
+						<h:outputText value=","/>
+					</rich:column>
+					<rich:column>
+						<h:inputText value="#{pos.y}"/>
+					</rich:column>
+					<rich:column>
+						<h:commandLink action="#{sensorsBean.deletePosition}">
+							<h:graphicImage url="../images/removeItem.png" />
+							<f:param name="index" value="#{sensorPositionTable.rowIndex}"></f:param>
+						</h:commandLink>
+						<h:commandLink action="#{sensorsBean.addPosition}" rendered="#{sensorPositionTable.rowIndex == sensorPositionTable.rowCount -1}">
+							<h:graphicImage url="../images/addItem.gif" />
+						</h:commandLink>
+					</rich:column>
+				</rich:dataTable>
+				
+				
 				<h:outputText value="Config directory : " rendered="#{!sensor.newInstance}" />
 				<h:outputText value="#{sensor.configDirectory}" rendered="#{!sensor.newInstance}" />
+				
 				<h:outputText value="DB mapper : " />
 				<h:outputText value="#{sensor.dbMapperClass}" rendered="#{!sensor.newInstance and ! empty sensor.dbMapperClass}" />
 				<h:inputText value="#{sensor.dbMapperClass}" rendered="#{sensor.newInstance or empty sensor.dbMapperClass}">
 					<f:converter converterId="ClassConverter" />
 				</h:inputText>
+				
 				<h:outputText value="Latest value : " rendered="#{!sensor.newInstance}" />
 				<h:outputText value="#{sensor.value}" rendered="#{!sensor.newInstance}" />
 			</h:panelGrid>

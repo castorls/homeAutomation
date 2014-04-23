@@ -1,6 +1,7 @@
 package smadja.homeAutomation.model;
 
 import java.io.File;
+import java.util.List;
 
 import org.apache.log4j.Logger;
 
@@ -28,11 +29,12 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 	private String queue;
 	private File configDirectory;
 	private String dbMapperClass;
+	private Double value;
+	private List<Position> positions;
 	@JsonIgnore
 	private HomeElementDbMapper dbMapper;
 
 	public HomeElement() {
-
 	}
 
 	public HomeElement(HomeElement other) {
@@ -42,6 +44,8 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 		this.configDirectory = other.configDirectory;
 		this.dbMapper = other.dbMapper;
 		this.dbMapperClass = other.dbMapperClass;
+		this.value = other.value == null ? null : new Double(other.value);
+		this.positions = other.positions == null ? null : other.positions;
 	}
 
 	public HomeElementDbMapper getDbMapper() {
@@ -85,12 +89,12 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 		this.queue = queue;
 	}
 
-	public boolean shouldSendAction(String action) {
+	public boolean shouldSendAction(Double action) {
 		// by default accept all actions
 		return true;
 	}
 
-	public void setLastedMessageId(String action, String correlationId) {
+	public void setLastedMessageId(Double action, String correlationId) {
 		// nothing to do
 	}
 
@@ -105,6 +109,22 @@ public abstract class HomeElement implements Comparable<HomeElement> {
 		} catch (HomeAutomationException e) {
 			logger.warn("Cannot create dbMapper instance for "+dbMapperClass, e);
 		}
+	}
+	
+	public Double getValue() {
+		return value;
+	}
+
+	public void setValue(Double value) {
+		this.value = value;
+	}
+
+	public List<Position> getPositions() {
+		return positions;
+	}
+
+	public void setPositions(List<Position> positions) {
+		this.positions = positions;
 	}
 
 	@Override

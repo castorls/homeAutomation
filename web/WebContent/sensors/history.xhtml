@@ -5,7 +5,7 @@
 <ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
 	<ui:define name="content">
 		<h:outputText value="Sensors list " />
-<svg id="svgContainer" style="min-height:300px;padding-bottom: 70px;" ></svg>
+<svg id="svgSensorContainer" style="min-height:300px;padding-bottom: 70px;" ></svg>
 <script type="text/javascript" src="../../lib/d3/d3.js"></script>
 <script type="text/javascript" src="../../lib/nvd3/nv.d3.js"></script>
 <link href="../../lib/nvd3/nv.d3.css" rel="stylesheet" />
@@ -35,7 +35,7 @@
         	return console.warn(error);
         }
         if(json.error){
-        	return d3.select('#svgContainer').append("text")
+        	return d3.select('#svgSensorContainer').append("text")
             .attr("x", "235")
             .attr("y", "35")
             .attr("dy", "-.7em")
@@ -58,7 +58,7 @@
        ];
 
         chart.forceY([0, d3.max(myData[0].values, function(d) { return d.y +5; })]);
-        d3.select('#svgContainer')    //Select the svg element you want to render the chart in.   
+        d3.select('#svgSensorContainer')    //Select the svg element you want to render the chart in.   
         .datum(myData)         //Populate the svg element with chart data...
         .call(chart);          //Finally, render the chart!
 

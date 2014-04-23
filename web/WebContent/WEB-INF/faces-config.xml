@@ -39,6 +39,50 @@
 	<navigation-rule>
 		<display-name>catalog</display-name>
 		<from-view-id>/*</from-view-id>
+		<!-- actuators -->
+		<navigation-case>
+			<from-action>#{actuatorsBean.cancelCurrentBeanEdition}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.saveCurrentBean}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.saveCurrentBean}</from-action>
+			<from-outcome>errorEdit</from-outcome>
+			<to-view-id>/actuators/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.doNew}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.edit}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/edit.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.delete}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/list.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.history}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/history.xhtml</to-view-id>
+		</navigation-case>
+		<navigation-case>
+			<from-action>#{actuatorsBean.doList}</from-action>
+			<from-outcome>success</from-outcome>
+			<to-view-id>/actuators/list.xhtml</to-view-id>
+		</navigation-case>
+		
+		
+		<!--  sensors  -->
 		<navigation-case>
 			<from-action>#{sensorsBean.cancelCurrentBeanEdition}</from-action>
 			<from-outcome>success</from-outcome>

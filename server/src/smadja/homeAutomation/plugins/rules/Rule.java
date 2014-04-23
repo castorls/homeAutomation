@@ -14,7 +14,7 @@ public abstract class Rule {
 	
 	public abstract void process(Message msg, Server server) throws HomeAutomationException;
 	
-	protected void sendActionMessage(Message msg, String action, Server server, long expiration ){
+	protected void sendActionMessage(Message msg, Double action, Server server, long expiration ){
 		String targetElement = msg.getTargetElement();
 		HomeElement elt = server.getHomeElementById(targetElement);
 		if (elt != null && !elt.shouldSendAction(action)) {
