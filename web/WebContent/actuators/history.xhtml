@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://java.sun.com/jsf/html" xmlns:f="http://java.sun.com/jsf/core" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:a4j="http://richfaces.org/a4j" xmlns:rich="http://richfaces.org/rich">
+
+<ui:composition template="/WEB-INF/templates/BasicTemplate.xhtml">
+	<ui:define name="content">
+		<h:outputText value="actuators list " />
+<svg id="svgActuatorContainer" style="min-height:300px;padding-bottom: 70px;" ></svg>
+<script type="text/javascript" src="../../lib/d3/d3.js"></script>
+<script type="text/javascript" src="../../lib/nvd3/nv.d3.js"></script>
+<link href="../../lib/nvd3/nv.d3.css" rel="stylesheet" />
+    <script type="text/javascript" >
+    /*These lines are all chart setup.  Pick and choose which chart features you want to utilize. */
+    nv.addGraph(function() {
+      var chart = nv.models.lineChart()
+                    .margin({left: 100})  //Adjust chart margins to give the x-axis some breathing room.
+                    .useInteractiveGuideline(true)  //We want nice looking tooltips and a guideline!
+                    .transitionDuration(350)  //how fast do you want the lines to transition?
+                    .showLegend(true)       //Show the legend, allowing users to turn on/off line series.
+                    .showYAxis(true)        //Show the y-axis
+                    .showXAxis(true)        //Show the x-axis
+      ;
+
+      chart.xAxis     //Chart x-axis settings
+          .axisLabel('Time ')
+          .tickFormat(function(d) { return d3.time.format('%Y-%m-%d %H:%M:%S')(new Date(d)); });
+
+      chart.yAxis     //Chart y-axis settings
+          .axisLabel('Value')
+          .tickFormat(d3.format('.02f'));
+      /* Done setting the chart up? Time to render it!*/
+      var myData;
+      d3.json("#{facesContext.externalContext.requestContextPath}/faces/actuators/actuatorData.xhtml?eltId=#{param['eltId']}", function(error, json) {
+        if (error){
+        	return console.warn(error);
+        }
+        if(json.error){
+        	return d3.select('#svgActuatorContainer').append("text")
+            .attr("x", "235")
+            .attr("y", "35")
+            .attr("dy", "-.7em")
+            .attr("class", "nvd3 nv-noData")
+            .style("text-anchor", "middle")
+            .text(json.error);
+        }
+        
+        var valueArray = [];
+        json.forEach(function(d) {
+        	valueArray.push({x: d.date, y: d.value})
+        });
+        myData = [
+         {
+           values: valueArray,
+           key: '<h:outputText value="#{param['eltId']}"/>',
+           color: "#ff7f0e",
+           area : false
+         }
+       ];
+
+        chart.forceY([0, d3.max(myData[0].values, function(d) { return d.y +5; })]);
+        d3.select('#svgActuatorContainer')    //Select the svg element you want to render the chart in.   
+        .datum(myData)         //Populate the svg element with chart data...
+        .call(chart);          //Finally, render the chart!
+
+        var xTicks = d3.select('.nv-x.nv-axis > g').selectAll('g');
+        xTicks
+          .selectAll('text')
+          .attr('transform', function(d,i,j) { return 'translate (-30, 55) rotate(-65 0,0)' }) ;
+        
+       });
+    
+      //Update the chart when window resizes.
+      nv.utils.windowResize(function() { chart.update() });
+      return chart;
+    });
+    </script>
+	</ui:define>
+</ui:composition>
+</html>
