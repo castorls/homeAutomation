@@ -8,6 +8,7 @@ import java.util.Set;
 
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
@@ -156,5 +157,27 @@ public abstract class ElementsBean {
 		doSearch(".*");
 		return "success";
 	}
+	
+	public String deletePosition(){
+		FacesContext context = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = context.getExternalContext();
+		HttpServletRequest myRequest = (HttpServletRequest)externalContext.getRequest();
+		Integer index = Integer.parseInt(myRequest.getParameter("index"));  
+		if(index != null){
+			ElementBean eltBean = (ElementBean) externalContext.getSessionMap().get("editedElt");
+			if (eltBean != null) {
+				eltBean.getPositions().remove(index.intValue());
+			}
+		}
+		return "success";
+	}
 
+	public String addPosition(){
+		Map<String, Object> sessionMap = FacesContext.getCurrentInstance().getExternalContext().getSessionMap();		
+		SensorBean sensorBean = (SensorBean) sessionMap.get("editedElt");
+		if (sensorBean != null) {
+			sensorBean.getPositions().add(new Position());
+		}
+		return "success";
+	}
 }

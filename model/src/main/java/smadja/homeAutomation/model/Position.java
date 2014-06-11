@@ -15,8 +15,8 @@ public class Position implements Serializable {
 	private static Logger logger = Logger.getLogger(Position.class);
 
 	private int level;
-	private int x = -1;
-	private int y = -1;
+	private Integer x = null;
+	private Integer y = null;
 
 	public Position() {
 	}
@@ -35,7 +35,7 @@ public class Position implements Serializable {
 		}
 	}
 
-	public Position(int level, int x, int y) {
+	public Position(int level, Integer x, Integer y) {
 		super();
 		this.level = level;
 		this.x = x;
@@ -50,29 +50,29 @@ public class Position implements Serializable {
 		this.level = level;
 	}
 
-	public int getX() {
+	public Integer getX() {
 		return x;
 	}
 
-	public void setX(int x) {
+	public void setX(Integer x) {
 		this.x = x;
 	}
 
-	public int getY() {
+	public Integer getY() {
 		return y;
 	}
 
-	public void setY(int y) {
+	public void setY(Integer y) {
 		this.y = y;
 	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + level;
-		result = prime * result + x;
-		result = prime * result + y;
+		result = prime * result + ((x == null) ? 0 : x.hashCode());
+		result = prime * result + ((y == null) ? 0 : y.hashCode());
 		return result;
 	}
 
@@ -87,9 +87,15 @@ public class Position implements Serializable {
 		Position other = (Position) obj;
 		if (level != other.level)
 			return false;
-		if (x != other.x)
+		if (x == null) {
+			if (other.x != null)
+				return false;
+		} else if (!x.equals(other.x))
 			return false;
-		if (y != other.y)
+		if (y == null) {
+			if (other.y != null)
+				return false;
+		} else if (!y.equals(other.y))
 			return false;
 		return true;
 	}

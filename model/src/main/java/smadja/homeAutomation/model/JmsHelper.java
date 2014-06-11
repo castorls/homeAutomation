@@ -60,7 +60,7 @@ public class JmsHelper {
 		}
 		return null;
 	}
-	
+
 	public static String sendHomeMessage(Parameter parameter, String targetElement, String content, String correlationId, long expiration) {
 		Message msg = new Message();
 		msg.setContent(content);
@@ -69,24 +69,29 @@ public class JmsHelper {
 		msg.setTargetElement(targetElement);
 		return sendHomeMessage(parameter, targetElement, msg, correlationId, expiration);
 	}
-	
+
 	public static String sendHomeMessage(Parameter parameter, String targetElement, Message msg, String correlationId, long expiration) {
 		Connection connection = null;
 		String msgId = null;
 		try {
 			connection = JmsHelper.initConnection(parameter);
-			Session session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
-			MessageProducer producer = JmsHelper.initQueueProducer(session, (QueueParameter) parameter);
-			connection.start();			
-			TextMessage jmsMsg = session.createTextMessage();
-			jmsMsg.setJMSCorrelationID(correlationId);
-			jmsMsg.setText(JSONHelper.serialize(msg));
-			if(expiration > 0){
-				jmsMsg.setJMSExpiration(System.currentTimeMillis() + expiration);
+			if (connection != null) {
+				Session session = connection.createSession(true, Session.CLIENT_ACKNOWLEDGE);
+				MessageProducer producer = JmsHelper.initQueueProducer(session, (QueueParameter) parameter);
+				connection.start();
+				TextMessage jmsMsg = session.createTextMessage();
+				jmsMsg.setJMSCorrelationID(correlationId);
+				jmsMsg.setText(JSONHelper.serialize(msg));
+				if (expiration > 0) {
+					jmsMsg.setJMSExpiration(System.currentTimeMillis() + expiration);
+				}
+				producer.send(jmsMsg);
+				session.commit();
+				msgId = jmsMsg.getJMSMessageID();
 			}
-			producer.send(jmsMsg);			
-			session.commit();
-			msgId = jmsMsg.getJMSMessageID();
+			else{
+				throw new JMSException("Connection cannot be establihed.");
+			}
 		} catch (JMSException e) {
 			logger.error(e.getMessage(), e);
 		} catch (JsonProcessingException e) {

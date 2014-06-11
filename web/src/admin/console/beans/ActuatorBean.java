@@ -3,7 +3,6 @@ package admin.console.beans;
 import org.apache.log4j.Logger;
 
 import smadja.homeAutomation.model.GenericActuator;
-import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 import smadja.homeAutomation.model.helper.HomeElementHelper;
@@ -11,6 +10,7 @@ import smadja.homeAutomation.model.mapper.HomeElementDbMapper;
 
 public class ActuatorBean extends ElementBean {
 
+	private static final long serialVersionUID = -370762476231053671L;
 	private static Logger logger = Logger.getLogger(ActuatorBean.class);
 
 	public ActuatorBean() {

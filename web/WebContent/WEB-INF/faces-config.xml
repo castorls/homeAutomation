@@ -36,6 +36,11 @@
 		<managed-bean-class>admin.console.beans.ErrorBean</managed-bean-class>
 		<managed-bean-scope>request</managed-bean-scope>
 	</managed-bean>
+	<managed-bean>
+		<managed-bean-name>viewBean</managed-bean-name>
+		<managed-bean-class>admin.console.beans.ViewBean</managed-bean-class>
+		<managed-bean-scope>session</managed-bean-scope>
+	</managed-bean>
 	<navigation-rule>
 		<display-name>catalog</display-name>
 		<from-view-id>/*</from-view-id>
@@ -136,8 +141,9 @@
 			<to-view-id>/index.xhtml</to-view-id>
 		</navigation-case>
 		<navigation-case>
-			<from-outcome>view</from-outcome>
-			<to-view-id>/todo.xhtml</to-view-id>
+			<from-action>#{viewBean.displayMainView}</from-action>
+			<from-outcome>mainView</from-outcome>
+			<to-view-id>/view/mainView.xhtml</to-view-id>
 		</navigation-case>
 	</navigation-rule>
 </faces-config>

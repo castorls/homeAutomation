@@ -45,7 +45,7 @@ public class SensorBean extends ElementBean implements Serializable {
 		if (sensor.getPositions() != null && !sensor.getPositions().isEmpty()) {
 			for (Iterator<Position> iterator = sensor.getPositions().iterator(); iterator.hasNext();) {
 				Position pos =iterator.next();
-				if (pos.getLevel() == 0 && pos.getX() == -1 && pos.getY() == -1) {
+				if (pos.getLevel() == 0 && pos.getX() == null && pos.getY() == null) {
 					iterator.remove();
 				}
 			}

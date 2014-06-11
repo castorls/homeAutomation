@@ -2,6 +2,7 @@ package admin.console.beans;
 
 import java.io.File;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import smadja.homeAutomation.model.HomeElement;
@@ -18,7 +19,7 @@ public class ElementBean implements Serializable {
 	protected File configDirectory;
 	protected Class<? extends HomeElementDbMapper> dbMapperClass;
 	protected boolean newInstance = false;
-	protected List<Position> positions;
+	protected List<Position> positions = new ArrayList<Position>();
 
 	public ElementBean() {
 		super();

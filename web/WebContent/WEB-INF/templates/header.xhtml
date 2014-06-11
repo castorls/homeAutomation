@@ -5,7 +5,7 @@
 
 		<rich:toolbar>
 			<rich:menuItem label="Home" action="home"  iconDisabled="true" />
-			<rich:menuItem label="View" action="view" iconDisabled="true"/>
+			<rich:menuItem label="View" action="#{viewBean.displayMainView}" iconDisabled="true"/>
 			<rich:dropDownMenu label="sensors">
 				<rich:menuItem label="New" action="#{sensorsBean.doNew}" />
 				<rich:menuItem  label="List" action="#{sensorsBean.doList}" />

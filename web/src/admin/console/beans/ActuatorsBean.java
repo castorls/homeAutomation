@@ -7,7 +7,6 @@ import javax.faces.context.FacesContext;
 
 import server.ServerClient;
 import smadja.homeAutomation.model.GenericActuator;
-import smadja.homeAutomation.model.GenericSensor;
 import smadja.homeAutomation.model.HomeAutomationException;
 import smadja.homeAutomation.model.HomeElement;
 
